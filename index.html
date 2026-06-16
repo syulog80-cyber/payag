@@ -296,11 +296,6 @@
             cursor: pointer;
         }
 
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
         /* Guests Sidebar */
         .guests-sidebar {
             background: #ffffff;
@@ -691,96 +686,6 @@
             padding: 0.5rem;
         }
 
-        /* Face Recognition Styles */
-        .face-recognition-container {
-            background: #f8f4ee;
-            border-radius: 1rem;
-            padding: 1rem;
-            margin: 1rem 0;
-            text-align: center;
-        }
-
-        .face-recognition-container video {
-            width: 100%;
-            max-width: 320px;
-            border-radius: 1rem;
-            border: 2px solid #e67e22;
-            background: #1a1a1a;
-        }
-
-        .face-recognition-container .camera-controls {
-            display: flex;
-            gap: 0.8rem;
-            justify-content: center;
-            margin-top: 0.8rem;
-            flex-wrap: wrap;
-        }
-
-        .face-recognition-container .status-text {
-            font-size: 0.85rem;
-            color: #5a3e2b;
-            margin: 0.5rem 0;
-            min-height: 1.5rem;
-        }
-
-        .face-recognition-container .status-text.success {
-            color: #27ae60;
-            font-weight: 600;
-        }
-
-        .face-recognition-container .status-text.error {
-            color: #e74c3c;
-            font-weight: 600;
-        }
-
-        .face-recognition-container .btn-face {
-            background: #2c3e50;
-            color: white;
-            border: none;
-            padding: 0.4rem 1.2rem;
-            border-radius: 40px;
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
-
-        .face-recognition-container .btn-face.active {
-            background: #e74c3c;
-        }
-
-        .face-recognition-container .btn-face:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .face-recognition-container .btn-face.scanning {
-            background: #f39c12;
-            animation: pulse-btn 1s infinite;
-        }
-
-        @keyframes pulse-btn {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        .customer-face-status {
-            display: inline-block;
-            padding: 0.2rem 0.6rem;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            margin-left: 0.5rem;
-        }
-
-        .customer-face-status.has-face {
-            background: #2ecc71;
-            color: white;
-        }
-
-        .customer-face-status.no-face {
-            background: #e74c3c;
-            color: white;
-        }
-
         @media (max-width: 700px) {
             body { padding: 1rem; }
         }
@@ -880,37 +785,9 @@
         <h3>Add Customer</h3>
         <input type="text" id="customerName" placeholder="Full Name" style="width:100%; margin:0.5rem 0; padding:0.5rem;">
         <input type="text" id="customerPhone" placeholder="Phone" style="width:100%; margin:0.5rem 0; padding:0.5rem;">
-        <div class="face-recognition-container" style="margin-top:0.5rem;">
-            <div style="font-weight:600; font-size:0.9rem; margin-bottom:0.5rem;">📸 Face Recognition Registration</div>
-            <video id="registrationVideo" autoplay muted playsinline></video>
-            <div id="registrationStatus" class="status-text">Click "Capture Face" to register your face</div>
-            <div class="camera-controls">
-                <button id="startRegistrationCamera" class="btn-face">📷 Start Camera</button>
-                <button id="captureFaceBtn" class="btn-face" disabled>📸 Capture Face</button>
-            </div>
-        </div>
         <div style="display:flex; gap:1rem; justify-content:center; margin-top:1rem;">
             <button id="closeCustomerModalBtn" class="btn-outline">Cancel</button>
             <button id="saveCustomerModalBtn" class="btn-primary">Save</button>
-        </div>
-    </div>
-</div>
-
-<!-- Face Verification Modal (for existing customers) -->
-<div id="faceVerificationModal" class="password-modal">
-    <div class="password-box" style="max-width: 420px;">
-        <h3>🔐 Face Verification</h3>
-        <p style="color:#b28b65; font-size:0.9rem; margin:0.5rem 0;">Look at the camera to verify your identity</p>
-        <div class="face-recognition-container" style="padding:0.5rem; margin:0.5rem 0;">
-            <video id="verificationVideo" autoplay muted playsinline></video>
-            <div id="verificationStatus" class="status-text">Starting camera...</div>
-            <div class="camera-controls">
-                <button id="startVerificationCamera" class="btn-face">📷 Start Camera</button>
-                <button id="verifyFaceBtn" class="btn-face" disabled>✅ Verify Face</button>
-            </div>
-        </div>
-        <div style="display:flex; gap:1rem; justify-content:center; margin-top:0.5rem;">
-            <button id="cancelVerificationBtn" class="btn-outline">Cancel</button>
         </div>
     </div>
 </div>
@@ -928,7 +805,6 @@
     let currentModalCart = [];
     let currentModalCustomerId = null;
     let currentPopupCustomerId = null;
-    let pendingVerificationCustomerId = null;
 
     const ADMIN_PASSWORD = "admin123";
     let activeProtectedView = null;
@@ -951,13 +827,6 @@
     let firebaseInitialized = false;
     let firebaseDb = null;
     let syncInProgress = false;
-
-    // Face Recognition variables
-    let faceDescriptor = null;
-    let isCameraActive = false;
-    let currentStream = null;
-    let isVerifying = false;
-    let registrationFaceData = null;
 
     // Show notification
     function showNotification(message) {
@@ -1097,10 +966,11 @@
 
     // Mark order as clicked - turns off highlight IMMEDIATELY
     function markOrderAsClicked(orderId) {
-        console.log("Order clicked:", orderId);
+        console.log("Order clicked:", orderId); // Debug log
         if (!clickedOrders.has(orderId)) {
             clickedOrders.add(orderId);
-            console.log("Order marked as clicked, highlight removed");
+            console.log("Order marked as clicked, highlight removed"); // Debug log
+            // Immediately re-render to update the UI
             if (document.getElementById("dashboardView").classList.contains("active")) {
                 renderDashboard();
             }
@@ -1109,13 +979,16 @@
 
     // Check if an order should be highlighted
     function shouldHighlightOrder(orderId, orderTimestamp) {
+        // If clicked before, never highlight again
         if (clickedOrders.has(orderId)) {
             return false;
         }
         
+        // Check if order was created in the last 5 minutes
         const now = Date.now();
         const isWithin5Minutes = (now - orderTimestamp) < 300000;
         
+        // Store the highlight start time if not already stored and should be highlighted
         if (isWithin5Minutes && !orderHighlightStartTime.has(orderId)) {
             orderHighlightStartTime.set(orderId, orderTimestamp);
         }
@@ -1226,8 +1099,8 @@
 
     function initDefaultData() {
         db.customers = [
-            { id: "c1", name: "bryxz", phone: "555-0142", createdAt: Date.now(), faceDescriptor: null },
-            { id: "c2", name: "Amelia Chen", phone: "555-0143", createdAt: Date.now() - 86400000, faceDescriptor: null }
+            { id: "c1", name: "bryxz", phone: "555-0142", createdAt: Date.now() },
+            { id: "c2", name: "Amelia Chen", phone: "555-0143", createdAt: Date.now() - 86400000 }
         ];
         db.menuItems = [
             { id: 1, name: "Truffle Risotto", price: 450, available: true, useTimeLimit: true, timeStart: "11:00", timeEnd: "21:00" },
@@ -1392,18 +1265,9 @@
         }
         db.customers.forEach(cust => {
             const orderCount = db.orders.filter(o => o.customerId === cust.id).length;
-            const hasFace = cust.faceDescriptor ? true : false;
             const div = document.createElement("div");
             div.className = "guest-item";
-            div.innerHTML = `
-                <div>
-                    <div class="guest-name">${escapeHtml(cust.name)} 
-                        <span class="customer-face-status ${hasFace ? 'has-face' : 'no-face'}">${hasFace ? '📸' : '❌'}</span>
-                    </div>
-                    <div class="guest-phone">${escapeHtml(cust.phone)}</div>
-                </div>
-                <span class="order-count-badge">${orderCount}</span>
-            `;
+            div.innerHTML = `<div><div class="guest-name">${escapeHtml(cust.name)}</div><div class="guest-phone">${escapeHtml(cust.phone)}</div></div><span class="order-count-badge">${orderCount}</span>`;
             div.onclick = () => openCustomerPopup(cust.id);
             container.appendChild(div);
         });
@@ -1414,7 +1278,6 @@
         const cust = getCustomerById(customerId);
         if (!cust) return;
         const custOrders = getOrdersByCustomer(customerId);
-        const hasFace = cust.faceDescriptor ? true : false;
         
         let ordersHtml = "";
         if (custOrders.length === 0) {
@@ -1431,14 +1294,10 @@
         if (popupBody) {
             popupBody.innerHTML = `
                 <div class="customer-info-popup">
-                    <h2>${escapeHtml(cust.name)} 
-                        <span class="customer-face-status ${hasFace ? 'has-face' : 'no-face'}">${hasFace ? '✅ Face Registered' : '❌ No Face'}</span>
-                    </h2>
+                    <h2>${escapeHtml(cust.name)}</h2>
                     <p>${escapeHtml(cust.phone)} · ${custOrders.length} order(s) today</p>
-                    ${!hasFace ? '<p style="color:#e67e22; font-size:0.8rem;">⚠️ No face registered. Face recognition not available.</p>' : ''}
                 </div>
-                <button id="popupNewOrderBtn" class="btn-primary" style="width:100%; margin-bottom:0.5rem;">+ New Order</button>
-                ${hasFace ? `<button id="popupVerifyFaceBtn" class="btn-face" style="width:100%; margin-bottom:1rem;">🔐 Verify with Face</button>` : ''}
+                <button id="popupNewOrderBtn" class="btn-primary" style="width:100%; margin-bottom:1rem;">+ New Order</button>
                 <div style="font-weight:600; margin-bottom:0.5rem;">Today's Orders</div>
                 <div id="popupOrdersContainer">${ordersHtml}</div>
                 <div style="margin-top:1rem; text-align:center;">
@@ -1452,13 +1311,6 @@
             closeCustomerPopup();
             openOrderModalForCustomer(customerId);
         };
-        
-        const verifyFaceBtn = document.getElementById("popupVerifyFaceBtn");
-        if (verifyFaceBtn) verifyFaceBtn.onclick = () => {
-            closeCustomerPopup();
-            openFaceVerification(customerId);
-        };
-        
         const deleteBtn = document.getElementById("popupDeleteCustomerBtn");
         if (deleteBtn) deleteBtn.onclick = () => {
             closeCustomerPopup();
@@ -1475,264 +1327,6 @@
         currentPopupCustomerId = null;
     }
 
-    // ========== FACE RECOGNITION FUNCTIONS ==========
-    
-    // Simple face detection using Face API (browser's built-in face detection)
-    async function detectFace(videoElement) {
-        if (!('FaceDetector' in window)) {
-            console.warn('FaceDetector not supported in this browser');
-            return null;
-        }
-        
-        try {
-            const faceDetector = new FaceDetector({
-                maxDetectedFaces: 1,
-                fastMode: true
-            });
-            
-            const faces = await faceDetector.detect(videoElement);
-            if (faces.length > 0) {
-                return faces[0];
-            }
-            return null;
-        } catch (error) {
-            console.error('Face detection error:', error);
-            return null;
-        }
-    }
-
-    // Generate a simple face descriptor (hash of bounding box + dimensions)
-    function generateFaceDescriptor(face) {
-        if (!face) return null;
-        // Create a simple descriptor based on face bounding box and landmarks
-        const bbox = face.boundingBox;
-        const landmarks = face.landmarks || [];
-        
-        let descriptor = [
-            bbox.x || 0,
-            bbox.y || 0,
-            bbox.width || 0,
-            bbox.height || 0
-        ];
-        
-        // Add landmark data if available
-        landmarks.forEach(landmark => {
-            if (landmark.locations) {
-                landmark.locations.forEach(loc => {
-                    descriptor.push(loc.x || 0);
-                    descriptor.push(loc.y || 0);
-                });
-            }
-        });
-        
-        // Create a simple hash
-        return btoa(descriptor.join(','));
-    }
-
-    // Compare two face descriptors (simple similarity check)
-    function compareFaceDescriptors(desc1, desc2) {
-        if (!desc1 || !desc2) return false;
-        // Simple comparison - check if they are exactly the same
-        // In a real implementation, you'd use a proper face recognition library
-        // This is a simplified version for demonstration
-        return desc1 === desc2;
-    }
-
-    // Start camera for face capture
-    async function startCamera(videoElement, statusElement, buttonElement) {
-        try {
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
-                currentStream = null;
-            }
-            
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    facingMode: 'user',
-                    width: { ideal: 320 },
-                    height: { ideal: 240 }
-                }
-            });
-            
-            currentStream = stream;
-            videoElement.srcObject = stream;
-            await videoElement.play();
-            isCameraActive = true;
-            
-            if (statusElement) {
-                statusElement.textContent = 'Camera ready. Look at the camera.';
-                statusElement.className = 'status-text';
-            }
-            if (buttonElement) {
-                buttonElement.disabled = false;
-                buttonElement.textContent = '📸 Capture Face';
-            }
-            
-            return true;
-        } catch (error) {
-            console.error('Camera error:', error);
-            if (statusElement) {
-                statusElement.textContent = '❌ Camera access denied. Please allow camera access.';
-                statusElement.className = 'status-text error';
-            }
-            return false;
-        }
-    }
-
-    // Stop camera
-    function stopCamera(videoElement) {
-        if (currentStream) {
-            currentStream.getTracks().forEach(track => track.stop());
-            currentStream = null;
-        }
-        if (videoElement) {
-            videoElement.srcObject = null;
-        }
-        isCameraActive = false;
-    }
-
-    // Capture face from video
-    async function captureFace(videoElement, statusElement) {
-        if (!isCameraActive || !videoElement) {
-            if (statusElement) {
-                statusElement.textContent = '⚠️ Please start camera first.';
-                statusElement.className = 'status-text error';
-            }
-            return null;
-        }
-        
-        try {
-            const face = await detectFace(videoElement);
-            if (face) {
-                const descriptor = generateFaceDescriptor(face);
-                if (statusElement) {
-                    statusElement.textContent = '✅ Face captured successfully!';
-                    statusElement.className = 'status-text success';
-                }
-                return descriptor;
-            } else {
-                if (statusElement) {
-                    statusElement.textContent = '❌ No face detected. Please look at the camera.';
-                    statusElement.className = 'status-text error';
-                }
-                return null;
-            }
-        } catch (error) {
-            console.error('Capture error:', error);
-            if (statusElement) {
-                statusElement.textContent = '❌ Error capturing face. Please try again.';
-                statusElement.className = 'status-text error';
-            }
-            return null;
-        }
-    }
-
-    // Open face verification modal
-    function openFaceVerification(customerId) {
-        pendingVerificationCustomerId = customerId;
-        const modal = document.getElementById('faceVerificationModal');
-        if (modal) modal.classList.add('active');
-        
-        // Reset video and status
-        const video = document.getElementById('verificationVideo');
-        const status = document.getElementById('verificationStatus');
-        const startBtn = document.getElementById('startVerificationCamera');
-        const verifyBtn = document.getElementById('verifyFaceBtn');
-        
-        if (video) video.srcObject = null;
-        if (status) {
-            status.textContent = 'Click "Start Camera" to begin.';
-            status.className = 'status-text';
-        }
-        if (startBtn) startBtn.disabled = false;
-        if (verifyBtn) verifyBtn.disabled = true;
-    }
-
-    // Close face verification modal
-    function closeFaceVerification() {
-        const modal = document.getElementById('faceVerificationModal');
-        if (modal) modal.classList.remove('active');
-        stopCamera(document.getElementById('verificationVideo'));
-        pendingVerificationCustomerId = null;
-    }
-
-    // Verify face for customer
-    async function verifyFace() {
-        const video = document.getElementById('verificationVideo');
-        const status = document.getElementById('verificationStatus');
-        
-        if (!isCameraActive || !video) {
-            if (status) {
-                status.textContent = '⚠️ Please start camera first.';
-                status.className = 'status-text error';
-            }
-            return;
-        }
-        
-        if (!pendingVerificationCustomerId) {
-            if (status) {
-                status.textContent = '❌ No customer selected.';
-                status.className = 'status-text error';
-            }
-            return;
-        }
-        
-        const customer = getCustomerById(pendingVerificationCustomerId);
-        if (!customer) {
-            if (status) {
-                status.textContent = '❌ Customer not found.';
-                status.className = 'status-text error';
-            }
-            return;
-        }
-        
-        if (!customer.faceDescriptor) {
-            if (status) {
-                status.textContent = '❌ Customer has no registered face.';
-                status.className = 'status-text error';
-            }
-            return;
-        }
-        
-        try {
-            const face = await detectFace(video);
-            if (face) {
-                const descriptor = generateFaceDescriptor(face);
-                const isMatch = compareFaceDescriptors(descriptor, customer.faceDescriptor);
-                
-                if (isMatch) {
-                    if (status) {
-                        status.textContent = '✅ Face verified successfully! Opening customer profile...';
-                        status.className = 'status-text success';
-                    }
-                    // Close verification and open customer popup
-                    setTimeout(() => {
-                        closeFaceVerification();
-                        openCustomerPopup(pendingVerificationCustomerId);
-                    }, 1000);
-                } else {
-                    if (status) {
-                        status.textContent = '❌ Face does not match registered customer. Please try again.';
-                        status.className = 'status-text error';
-                    }
-                }
-            } else {
-                if (status) {
-                    status.textContent = '❌ No face detected. Please look at the camera.';
-                    status.className = 'status-text error';
-                }
-            }
-        } catch (error) {
-            console.error('Verification error:', error);
-            if (status) {
-                status.textContent = '❌ Error during verification. Please try again.';
-                status.className = 'status-text error';
-            }
-        }
-    }
-
-    // ========== ORDER MODAL FUNCTIONS ==========
-    
     function openOrderModalForCustomer(customerId) {
         const cust = getCustomerById(customerId);
         if (!cust) return;
@@ -1833,6 +1427,7 @@
         };
         db.orders.push(newOrder);
         
+        // Store highlight start time for this new order
         orderHighlightStartTime.set(newOrder.id, newOrder.timestamp);
         
         saveDatabase();
@@ -1856,6 +1451,7 @@
         const container = document.getElementById("dashboardContent");
         if (!container) return;
         
+        // Check for expired highlights (5 minutes passed)
         const now = Date.now();
         let needsRefresh = false;
         for (let [orderId, startTime] of orderHighlightStartTime.entries()) {
@@ -1882,6 +1478,7 @@
         if (menuTotals.size === 0) menuSummaryHtml = `<tr><td colspan="3" style="text-align:center;">No orders today</td></td>`;
         else for (let [name, data] of menuTotals.entries()) menuSummaryHtml += `<tr><td>${escapeHtml(name)}</td><td>${data.quantity}</td><td>${CURRENCY}${data.revenue.toFixed(2)}</td></tr>`;
         
+        // Group orders by customer and get latest order timestamp for sorting
         const customersWithOrders = new Map();
         db.orders.forEach(order => {
             const cust = getCustomerById(order.customerId);
@@ -1901,6 +1498,7 @@
             }
         });
         
+        // Sort customers by latest order time (newest first)
         const sortedCustomers = Array.from(customersWithOrders.values()).sort((a, b) => b.latestOrderTime - a.latestOrderTime);
         
         let customerHistoryHtml = "";
@@ -1982,6 +1580,7 @@
         }
     }
 
+    // Global click handler for orders
     window.handleOrderClick = function(orderId) {
         console.log("Click handler triggered for order:", orderId);
         markOrderAsClicked(orderId);
@@ -2067,28 +1666,6 @@
         const phoneInput = document.getElementById("customerPhone");
         if (nameInput) nameInput.value = "";
         if (phoneInput) phoneInput.value = "";
-        
-        // Reset face registration UI
-        registrationFaceData = null;
-        const status = document.getElementById('registrationStatus');
-        if (status) {
-            status.textContent = 'Click "Start Camera" to register your face.';
-            status.className = 'status-text';
-        }
-        const captureBtn = document.getElementById('captureFaceBtn');
-        if (captureBtn) {
-            captureBtn.disabled = true;
-            captureBtn.textContent = '📸 Capture Face';
-        }
-        const startBtn = document.getElementById('startRegistrationCamera');
-        if (startBtn) {
-            startBtn.disabled = false;
-            startBtn.textContent = '📷 Start Camera';
-        }
-        
-        // Stop any existing camera
-        stopCamera(document.getElementById('registrationVideo'));
-        
         const modal = document.getElementById("customerModal");
         if (modal) modal.classList.add("active");
     }
@@ -2099,26 +1676,12 @@
         const name = nameInput ? nameInput.value.trim() : "";
         const phone = phoneInput ? phoneInput.value.trim() : "";
         if (!name || !phone) { alert("Name and phone required"); return; }
-        
-        const newCustomer = { 
-            id: "c" + Date.now() + "_" + Math.random().toString(36).substr(2, 6), 
-            name, 
-            phone, 
-            createdAt: Date.now(),
-            faceDescriptor: registrationFaceData || null
-        };
-        
-        db.customers.push(newCustomer);
+        db.customers.push({ id: "c" + Date.now() + "_" + Math.random().toString(36).substr(2, 6), name, phone, createdAt: Date.now() });
         saveDatabase();
         renderGuests();
-        
         const modal = document.getElementById("customerModal");
         if (modal) modal.classList.remove("active");
-        
-        // Stop camera
-        stopCamera(document.getElementById('registrationVideo'));
-        
-        alert(`Customer "${name}" added!${registrationFaceData ? ' Face registered successfully.' : ''}`);
+        alert(`Customer "${name}" added!`);
     }
 
     function requestDeletePassword(customerId) {
@@ -2235,7 +1798,6 @@
         if (closeCustomerModalBtn) closeCustomerModalBtn.onclick = () => {
             const modal = document.getElementById("customerModal");
             if (modal) modal.classList.remove("active");
-            stopCamera(document.getElementById('registrationVideo'));
         };
         
         const saveCustomerBtn = document.getElementById("saveCustomerModalBtn");
@@ -2258,70 +1820,6 @@
         
         const customerPopup = document.getElementById("customerPopup");
         if (customerPopup) customerPopup.addEventListener("click", (e) => { if (e.target === customerPopup) closeCustomerPopup(); });
-        
-        // Face Recognition - Registration
-        const startRegBtn = document.getElementById('startRegistrationCamera');
-        if (startRegBtn) {
-            startRegBtn.onclick = async () => {
-                const video = document.getElementById('registrationVideo');
-                const status = document.getElementById('registrationStatus');
-                const captureBtn = document.getElementById('captureFaceBtn');
-                const success = await startCamera(video, status, captureBtn);
-                if (success) {
-                    startRegBtn.textContent = '📷 Restart Camera';
-                }
-            };
-        }
-        
-        const captureBtn = document.getElementById('captureFaceBtn');
-        if (captureBtn) {
-            captureBtn.onclick = async () => {
-                const video = document.getElementById('registrationVideo');
-                const status = document.getElementById('registrationStatus');
-                const descriptor = await captureFace(video, status);
-                if (descriptor) {
-                    registrationFaceData = descriptor;
-                    captureBtn.textContent = '✅ Captured!';
-                    captureBtn.style.background = '#27ae60';
-                } else {
-                    registrationFaceData = null;
-                    captureBtn.textContent = '📸 Capture Face';
-                    captureBtn.style.background = '';
-                }
-            };
-        }
-        
-        // Face Recognition - Verification
-        const startVerBtn = document.getElementById('startVerificationCamera');
-        if (startVerBtn) {
-            startVerBtn.onclick = async () => {
-                const video = document.getElementById('verificationVideo');
-                const status = document.getElementById('verificationStatus');
-                const verifyBtn = document.getElementById('verifyFaceBtn');
-                const success = await startCamera(video, status, verifyBtn);
-                if (success) {
-                    startVerBtn.textContent = '📷 Restart Camera';
-                }
-            };
-        }
-        
-        const verifyBtn = document.getElementById('verifyFaceBtn');
-        if (verifyBtn) {
-            verifyBtn.onclick = verifyFace;
-        }
-        
-        const cancelVerBtn = document.getElementById('cancelVerificationBtn');
-        if (cancelVerBtn) {
-            cancelVerBtn.onclick = closeFaceVerification;
-        }
-        
-        // Close face verification on backdrop click
-        const verModal = document.getElementById('faceVerificationModal');
-        if (verModal) {
-            verModal.addEventListener('click', (e) => {
-                if (e.target === verModal) closeFaceVerification();
-            });
-        }
     }
 
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ return m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'; }); }
