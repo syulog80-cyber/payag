@@ -148,6 +148,28 @@
             color: #3a2a1f;
             padding-left: 0.5rem;
             border-left: 4px solid #e67e22;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn-excel {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .btn-excel:hover {
+            background: #229954;
+            transform: scale(1.02);
         }
 
         table {
@@ -272,6 +294,11 @@
             padding: 0.5rem 1rem;
             border-radius: 40px;
             cursor: pointer;
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         /* Guests Sidebar */
@@ -408,6 +435,29 @@
             padding: 0.8rem;
             margin-bottom: 0.8rem;
             border: 1px solid #efe2d4;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .order-card.new-order {
+            background: #fff9c4 !important;
+            border-left: 4px solid #f39c12 !important;
+            animation: pulse 0.5s ease;
+        }
+
+        .order-card.new-order:hover {
+            background: #fff59d !important;
+        }
+
+        .order-card.clicked {
+            background: white !important;
+            border-left: 1px solid #efe2d4 !important;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); background: #fff9c4; }
+            50% { transform: scale(1.01); background: #fff59d; }
+            100% { transform: scale(1); background: #fff9c4; }
         }
 
         .order-date {
@@ -538,6 +588,199 @@
             font-size: 0.85rem;
         }
 
+        /* Sync status indicator */
+        .sync-status {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            background: #e8e0d3;
+            color: #5a3e2b;
+            display: inline-block;
+        }
+
+        .sync-status.synced {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .sync-status.syncing {
+            background: #f39c12;
+            color: white;
+        }
+
+        .sync-status.offline {
+            background: #e74c3c;
+            color: white;
+        }
+
+        /* Midnight reset notification */
+        .reset-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #e67e22;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            z-index: 3000;
+            animation: slideIn 0.3s ease-out;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .refresh-indicator {
+            font-size: 0.7rem;
+            color: #b28b65;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .refresh-spinner {
+            width: 12px;
+            height: 12px;
+            border: 2px solid #e0cfbc;
+            border-top-color: #e67e22;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .customer-order-group {
+            margin-bottom: 1rem;
+            border: 1px solid #efe2d4;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+
+        .customer-header {
+            background: #fcf5ea;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .orders-list {
+            padding: 0.5rem;
+        }
+
+        /* Face Recognition Styles */
+        .face-recognition-container {
+            background: #f8f4ee;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .face-recognition-container video {
+            width: 100%;
+            max-width: 320px;
+            border-radius: 1rem;
+            border: 2px solid #e67e22;
+            background: #1a1a1a;
+        }
+
+        .face-recognition-container .camera-controls {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: center;
+            margin-top: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .face-recognition-container .status-text {
+            font-size: 0.85rem;
+            color: #5a3e2b;
+            margin: 0.5rem 0;
+            min-height: 1.5rem;
+        }
+
+        .face-recognition-container .status-text.success {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .face-recognition-container .status-text.error {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        .face-recognition-container .btn-face {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .face-recognition-container .btn-face.active {
+            background: #e74c3c;
+        }
+
+        .face-recognition-container .btn-face:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .face-recognition-container .btn-face.scanning {
+            background: #f39c12;
+            animation: pulse-btn 1s infinite;
+        }
+
+        @keyframes pulse-btn {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .customer-face-status {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-left: 0.5rem;
+        }
+
+        .customer-face-status.has-face {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .customer-face-status.no-face {
+            background: #e74c3c;
+            color: white;
+        }
+
         @media (max-width: 700px) {
             body { padding: 1rem; }
         }
@@ -550,7 +793,7 @@
         <div class="nav-buttons">
             <button id="ordersViewBtn" class="nav-btn active">Orders</button>
             <button id="dashboardViewBtn" class="nav-btn">Dashboard</button>
-            <button id="menuViewBtn" class="nav-btn">Menu</button>
+            <button id="menuViewBtn" class="nav-btn">Admin</button>
         </div>
     </div>
 
@@ -637,9 +880,37 @@
         <h3>Add Customer</h3>
         <input type="text" id="customerName" placeholder="Full Name" style="width:100%; margin:0.5rem 0; padding:0.5rem;">
         <input type="text" id="customerPhone" placeholder="Phone" style="width:100%; margin:0.5rem 0; padding:0.5rem;">
+        <div class="face-recognition-container" style="margin-top:0.5rem;">
+            <div style="font-weight:600; font-size:0.9rem; margin-bottom:0.5rem;">📸 Face Recognition Registration</div>
+            <video id="registrationVideo" autoplay muted playsinline></video>
+            <div id="registrationStatus" class="status-text">Click "Capture Face" to register your face</div>
+            <div class="camera-controls">
+                <button id="startRegistrationCamera" class="btn-face">📷 Start Camera</button>
+                <button id="captureFaceBtn" class="btn-face" disabled>📸 Capture Face</button>
+            </div>
+        </div>
         <div style="display:flex; gap:1rem; justify-content:center; margin-top:1rem;">
             <button id="closeCustomerModalBtn" class="btn-outline">Cancel</button>
             <button id="saveCustomerModalBtn" class="btn-primary">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- Face Verification Modal (for existing customers) -->
+<div id="faceVerificationModal" class="password-modal">
+    <div class="password-box" style="max-width: 420px;">
+        <h3>🔐 Face Verification</h3>
+        <p style="color:#b28b65; font-size:0.9rem; margin:0.5rem 0;">Look at the camera to verify your identity</p>
+        <div class="face-recognition-container" style="padding:0.5rem; margin:0.5rem 0;">
+            <video id="verificationVideo" autoplay muted playsinline></video>
+            <div id="verificationStatus" class="status-text">Starting camera...</div>
+            <div class="camera-controls">
+                <button id="startVerificationCamera" class="btn-face">📷 Start Camera</button>
+                <button id="verifyFaceBtn" class="btn-face" disabled>✅ Verify Face</button>
+            </div>
+        </div>
+        <div style="display:flex; gap:1rem; justify-content:center; margin-top:0.5rem;">
+            <button id="cancelVerificationBtn" class="btn-outline">Cancel</button>
         </div>
     </div>
 </div>
@@ -657,23 +928,271 @@
     let currentModalCart = [];
     let currentModalCustomerId = null;
     let currentPopupCustomerId = null;
+    let pendingVerificationCustomerId = null;
 
     const ADMIN_PASSWORD = "admin123";
     let activeProtectedView = null;
     let pendingDeleteCustomerId = null;
     const CURRENCY = "PHP ";
 
+    // Midnight reset timer reference
+    let midnightTimer = null;
+    
+    // Dashboard refresh timer
+    let dashboardRefreshTimer = null;
+    
+    // Track clicked orders (to remove highlight immediately)
+    let clickedOrders = new Set();
+    
+    // Track highlight start time for each order (for 5-minute auto-expiry)
+    let orderHighlightStartTime = new Map();
+
+    // Firebase variables
+    let firebaseInitialized = false;
+    let firebaseDb = null;
+    let syncInProgress = false;
+
+    // Face Recognition variables
+    let faceDescriptor = null;
+    let isCameraActive = false;
+    let currentStream = null;
+    let isVerifying = false;
+    let registrationFaceData = null;
+
+    // Show notification
+    function showNotification(message) {
+        const notification = document.createElement('div');
+        notification.className = 'reset-notification';
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+
     // Daily reset
     function checkAndResetDailyOrders() {
         const today = new Date().toDateString();
         const lastReset = db.lastResetDate ? new Date(db.lastResetDate).toDateString() : null;
+        
         if (lastReset !== today) {
+            const oldOrdersCount = db.orders.length;
             db.orders = [];
             db.lastResetDate = new Date().toISOString();
             saveDatabase();
+            
+            // Clear tracking on reset
+            clickedOrders.clear();
+            orderHighlightStartTime.clear();
+            
+            if (oldOrdersCount > 0) {
+                showNotification(`🕛 Midnight Reset: ${oldOrdersCount} order(s) cleared for new day!`);
+            } else {
+                showNotification(`🕛 New day started! Ready for orders.`);
+            }
+            
+            refreshUIAfterReset();
             return true;
         }
         return false;
+    }
+
+    function refreshUIAfterReset() {
+        renderGuests();
+        const dashboardView = document.getElementById("dashboardView");
+        if (dashboardView && dashboardView.classList.contains("active")) {
+            renderDashboard();
+        }
+        if (currentPopupCustomerId) {
+            closeCustomerPopup();
+        }
+        if (document.getElementById("orderModal").classList.contains("active")) {
+            closeOrderModal();
+        }
+    }
+
+    function scheduleMidnightReset() {
+        if (midnightTimer) {
+            clearTimeout(midnightTimer);
+        }
+        
+        const now = new Date();
+        const night = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() + 1,
+            0, 0, 0
+        );
+        const msUntilMidnight = night.getTime() - now.getTime();
+        
+        midnightTimer = setTimeout(() => {
+            const resetOccurred = checkAndResetDailyOrders();
+            scheduleMidnightReset();
+            if (resetOccurred) {
+                setTimeout(() => {
+                    refreshUIAfterReset();
+                }, 100);
+            }
+        }, msUntilMidnight);
+    }
+
+    function setupVisibilityCheck() {
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                const resetOccurred = checkAndResetDailyOrders();
+                if (resetOccurred) {
+                    refreshUIAfterReset();
+                }
+                const dashboardView = document.getElementById("dashboardView");
+                if (dashboardView && dashboardView.classList.contains("active")) {
+                    renderDashboard();
+                }
+            }
+        });
+    }
+
+    function setupPeriodicCheck() {
+        setInterval(() => {
+            const resetOccurred = checkAndResetDailyOrders();
+            if (resetOccurred) {
+                refreshUIAfterReset();
+            }
+            // Also check for expired highlights (5 minutes passed)
+            const dashboardView = document.getElementById("dashboardView");
+            if (dashboardView && dashboardView.classList.contains("active")) {
+                const now = Date.now();
+                let needsRefresh = false;
+                for (let [orderId, startTime] of orderHighlightStartTime.entries()) {
+                    if (now - startTime >= 300000 && !clickedOrders.has(orderId)) {
+                        clickedOrders.add(orderId);
+                        needsRefresh = true;
+                    }
+                }
+                if (needsRefresh) {
+                    renderDashboard();
+                }
+            }
+        }, 60000);
+    }
+
+    function startDashboardAutoRefresh() {
+        if (dashboardRefreshTimer) {
+            clearInterval(dashboardRefreshTimer);
+        }
+        
+        dashboardRefreshTimer = setInterval(() => {
+            const dashboardView = document.getElementById("dashboardView");
+            if (dashboardView && dashboardView.classList.contains("active")) {
+                renderDashboard();
+            }
+        }, 3000);
+    }
+    
+    function stopDashboardAutoRefresh() {
+        if (dashboardRefreshTimer) {
+            clearInterval(dashboardRefreshTimer);
+            dashboardRefreshTimer = null;
+        }
+    }
+
+    // Mark order as clicked - turns off highlight IMMEDIATELY
+    function markOrderAsClicked(orderId) {
+        console.log("Order clicked:", orderId);
+        if (!clickedOrders.has(orderId)) {
+            clickedOrders.add(orderId);
+            console.log("Order marked as clicked, highlight removed");
+            if (document.getElementById("dashboardView").classList.contains("active")) {
+                renderDashboard();
+            }
+        }
+    }
+
+    // Check if an order should be highlighted
+    function shouldHighlightOrder(orderId, orderTimestamp) {
+        if (clickedOrders.has(orderId)) {
+            return false;
+        }
+        
+        const now = Date.now();
+        const isWithin5Minutes = (now - orderTimestamp) < 300000;
+        
+        if (isWithin5Minutes && !orderHighlightStartTime.has(orderId)) {
+            orderHighlightStartTime.set(orderId, orderTimestamp);
+        }
+        
+        return isWithin5Minutes;
+    }
+
+    // ========== EXCEL EXPORT FUNCTION ==========
+    function exportToExcel() {
+        if (db.orders.length === 0) {
+            alert("No orders to export!");
+            return;
+        }
+
+        const exportData = [];
+        
+        exportData.push([
+            'Order ID',
+            'Date & Time',
+            'Customer Name',
+            'Customer Phone',
+            'Items',
+            'Total Amount (PHP)'
+        ]);
+        
+        const sortedOrders = [...db.orders].sort((a, b) => b.timestamp - a.timestamp);
+        
+        sortedOrders.forEach(order => {
+            const customer = getCustomerById(order.customerId);
+            const customerName = customer ? customer.name : 'Unknown Customer';
+            const customerPhone = customer ? customer.phone : 'N/A';
+            const itemsString = order.items.map(item => `${item.quantity}x ${item.name}`).join(', ');
+            
+            exportData.push([
+                order.id,
+                order.date,
+                customerName,
+                customerPhone,
+                itemsString,
+                order.total.toFixed(2)
+            ]);
+        });
+        
+        exportData.push([]);
+        exportData.push(['SUMMARY REPORT', '', '', '', '', '']);
+        exportData.push(['Total Orders', db.orders.length, '', '', '', '']);
+        
+        const totalRevenue = db.orders.reduce((sum, order) => sum + order.total, 0);
+        exportData.push(['Total Revenue', `${CURRENCY}${totalRevenue.toFixed(2)}`, '', '', '', '']);
+        
+        const uniqueCustomers = new Set(db.orders.map(o => o.customerId)).size;
+        exportData.push(['Unique Customers', uniqueCustomers, '', '', '', '']);
+        
+        exportData.push([]);
+        exportData.push(['Generated on:', new Date().toLocaleString(), '', '', '', '']);
+        
+        const csvContent = exportData.map(row => 
+            row.map(cell => {
+                if (typeof cell === 'string' && (cell.includes(',') || cell.includes('"') || cell.includes('\n'))) {
+                    return `"${cell.replace(/"/g, '""')}"`;
+                }
+                return cell;
+            }).join(',')
+        ).join('\n');
+        
+        const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        const date = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `order_history_${date}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        showNotification(`✅ Exported ${db.orders.length} orders to Excel!`);
     }
 
     function loadDatabase() {
@@ -690,7 +1209,9 @@
         } else {
             initDefaultData();
         }
+        
         checkAndResetDailyOrders();
+        
         if (db.menuItems.length) {
             nextMenuId = Math.max(...db.menuItems.map(i => i.id)) + 1;
         } else { nextMenuId = 1; }
@@ -699,21 +1220,22 @@
             if (item.timeEnd === undefined) item.timeEnd = "23:59";
             if (item.useTimeLimit === undefined) item.useTimeLimit = false;
         });
+        
         saveDatabase();
     }
 
     function initDefaultData() {
         db.customers = [
-            { id: "c1", name: "bryxz", phone: "555-0142", createdAt: Date.now() },
-            { id: "c2", name: "Amelia Chen", phone: "555-0142", createdAt: Date.now() - 86400000 }
+            { id: "c1", name: "bryxz", phone: "555-0142", createdAt: Date.now(), faceDescriptor: null },
+            { id: "c2", name: "Amelia Chen", phone: "555-0143", createdAt: Date.now() - 86400000, faceDescriptor: null }
         ];
         db.menuItems = [
-            { id: 1, name: "Monggos", price: 40, available: true, useTimeLimit: true, timeStart: "11:00", timeEnd: "21:00" },
-            { id: 2, name: "Pancit", price: 40, available: true, useTimeLimit: false, timeStart: "00:00", timeEnd: "23:59" },
-            { id: 3, name: "Lumpia", price: 40, available: true, useTimeLimit: false, timeStart: "00:00", timeEnd: "23:59" },
-            { id: 4, name: "Fried Chicken", price: 50, available: true, useTimeLimit: true, timeStart: "13:00", timeEnd: "20:00" },
-            { id: 5, name: "Guso", price: 30, available: true, useTimeLimit: true, timeStart: "17:00", timeEnd: "22:00" },
-            { id: 6, name: "Pinirito", price: 50, available: true, useTimeLimit: false, timeStart: "00:00", timeEnd: "23:59" }
+            { id: 1, name: "Truffle Risotto", price: 450, available: true, useTimeLimit: true, timeStart: "11:00", timeEnd: "21:00" },
+            { id: 2, name: "Roasted Chicken", price: 375, available: true, useTimeLimit: false, timeStart: "00:00", timeEnd: "23:59" },
+            { id: 3, name: "Garden Salad", price: 170, available: true, useTimeLimit: false, timeStart: "00:00", timeEnd: "23:59" },
+            { id: 4, name: "Chocolate Tart", price: 145, available: true, useTimeLimit: true, timeStart: "13:00", timeEnd: "20:00" },
+            { id: 5, name: "Beef Steak", price: 580, available: true, useTimeLimit: true, timeStart: "17:00", timeEnd: "22:00" },
+            { id: 6, name: "Lemonade", price: 90, available: true, useTimeLimit: false, timeStart: "00:00", timeEnd: "23:59" }
         ];
         db.orders = [];
         db.lastResetDate = new Date().toISOString();
@@ -722,6 +1244,131 @@
 
     function saveDatabase() {
         localStorage.setItem("maison_db_v10", JSON.stringify(db));
+        if (firebaseInitialized && firebaseDb && !syncInProgress) {
+            syncToFirebase();
+        }
+    }
+
+    // ========== FIREBASE SYNC FUNCTIONS ==========
+    async function initFirebase() {
+        try {
+            const { initializeApp } = await import("https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js");
+            const { getDatabase, ref, set, onValue, get } = await import("https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js");
+            
+            const firebaseConfig = {
+                apiKey: "AIzaSyBPuRlCPhBBr1GZNXrE_pZDudRLF-N60sA",
+                authDomain: "payag-eaa10.firebaseapp.com",
+                databaseURL: "https://payag-eaa10-default-rtdb.asia-southeast1.firebasedatabase.app",
+                projectId: "payag-eaa10",
+                storageBucket: "payag-eaa10.firebasestorage.app",
+                messagingSenderId: "788938279061",
+                appId: "1:788938279061:web:076246ab47307de873b39c"
+            };
+
+            const app = initializeApp(firebaseConfig);
+            firebaseDb = getDatabase(app);
+            
+            await loadFromFirebase();
+            
+            const dbRef = ref(firebaseDb, 'restaurantData');
+            onValue(dbRef, (snapshot) => {
+                if (!syncInProgress) {
+                    const data = snapshot.val();
+                    if (data && data.db) {
+                        syncInProgress = true;
+                        db = data.db;
+                        if (!db.customers) db.customers = [];
+                        if (!db.menuItems) db.menuItems = [];
+                        if (!db.orders) db.orders = [];
+                        if (!db.lastResetDate) db.lastResetDate = null;
+                        saveDatabase();
+                        refreshUI();
+                        syncInProgress = false;
+                        updateSyncStatus(true, "Connected");
+                    }
+                }
+            });
+            
+            firebaseInitialized = true;
+            updateSyncStatus(true, "Connected");
+        } catch (error) {
+            console.error("Firebase init error:", error);
+            updateSyncStatus(false, "Offline");
+            firebaseInitialized = false;
+        }
+    }
+
+    async function loadFromFirebase() {
+        if (!firebaseDb) return false;
+        try {
+            const { getDatabase, ref, get } = await import("https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js");
+            const dbRef = ref(firebaseDb, 'restaurantData');
+            const snapshot = await get(dbRef);
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                if (data.db) {
+                    syncInProgress = true;
+                    db = data.db;
+                    if (!db.customers) db.customers = [];
+                    if (!db.menuItems) db.menuItems = [];
+                    if (!db.orders) db.orders = [];
+                    if (!db.lastResetDate) db.lastResetDate = null;
+                    saveDatabase();
+                    syncInProgress = false;
+                    updateSyncStatus(true, "Connected");
+                    return true;
+                }
+            }
+        } catch (error) {
+            console.error("Error loading from Firebase:", error);
+        }
+        return false;
+    }
+
+    async function syncToFirebase() {
+        if (!firebaseDb || syncInProgress) {
+            if (!firebaseDb) updateSyncStatus(false, "Offline");
+            return;
+        }
+        
+        syncInProgress = true;
+        updateSyncStatus(true, "Syncing...");
+        
+        try {
+            const { ref, set } = await import("https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js");
+            const dbRef = ref(firebaseDb, 'restaurantData');
+            await set(dbRef, {
+                db: db,
+                lastUpdated: Date.now()
+            });
+            updateSyncStatus(true, "Connected");
+        } catch (error) {
+            console.error("Sync error:", error);
+            updateSyncStatus(false, "Sync Failed");
+        } finally {
+            syncInProgress = false;
+        }
+    }
+
+    function updateSyncStatus(connected, message) {
+        const statusEl = document.getElementById("syncStatus");
+        if (statusEl) {
+            statusEl.textContent = message || (connected ? "Connected" : "Offline");
+            statusEl.className = `sync-status ${connected ? 'synced' : 'offline'}`;
+            if (message === "Syncing...") {
+                statusEl.className = "sync-status syncing";
+            }
+        }
+    }
+
+    function refreshUI() {
+        renderGuests();
+        if (document.getElementById("dashboardView").classList.contains("active")) {
+            renderDashboard();
+        }
+        if (document.getElementById("menuView").classList.contains("active")) {
+            renderMenuManagement();
+        }
     }
 
     function isItemAvailableNow(item) {
@@ -735,9 +1382,9 @@
     function getCustomerById(id) { return db.customers.find(c => c.id === id); }
     function getOrdersByCustomer(custId) { return db.orders.filter(o => o.customerId === custId).sort((a, b) => b.timestamp - a.timestamp); }
 
-    // Render Guests Sidebar
     function renderGuests() {
         const container = document.getElementById("guestsListContainer");
+        if (!container) return;
         container.innerHTML = "";
         if (db.customers.length === 0) {
             container.innerHTML = "<div style='padding:1rem; text-align:center; color:#b28b65;'>No customers.<br>Click + Add Customer</div>";
@@ -745,20 +1392,29 @@
         }
         db.customers.forEach(cust => {
             const orderCount = db.orders.filter(o => o.customerId === cust.id).length;
+            const hasFace = cust.faceDescriptor ? true : false;
             const div = document.createElement("div");
             div.className = "guest-item";
-            div.innerHTML = `<div><div class="guest-name">${escapeHtml(cust.name)}</div><div class="guest-phone">${escapeHtml(cust.phone)}</div></div><span class="order-count-badge">${orderCount}</span>`;
+            div.innerHTML = `
+                <div>
+                    <div class="guest-name">${escapeHtml(cust.name)} 
+                        <span class="customer-face-status ${hasFace ? 'has-face' : 'no-face'}">${hasFace ? '📸' : '❌'}</span>
+                    </div>
+                    <div class="guest-phone">${escapeHtml(cust.phone)}</div>
+                </div>
+                <span class="order-count-badge">${orderCount}</span>
+            `;
             div.onclick = () => openCustomerPopup(cust.id);
             container.appendChild(div);
         });
     }
 
-    // Open Popup for Customer
     function openCustomerPopup(customerId) {
         currentPopupCustomerId = customerId;
         const cust = getCustomerById(customerId);
         if (!cust) return;
         const custOrders = getOrdersByCustomer(customerId);
+        const hasFace = cust.faceDescriptor ? true : false;
         
         let ordersHtml = "";
         if (custOrders.length === 0) {
@@ -771,50 +1427,328 @@
             });
         }
         
-        document.getElementById("popupBody").innerHTML = `
-            <div class="customer-info-popup">
-                <h2>${escapeHtml(cust.name)}</h2>
-                <p>${escapeHtml(cust.phone)} · ${custOrders.length} order(s) today</p>
-            </div>
-            <button id="popupNewOrderBtn" class="btn-primary" style="width:100%; margin-bottom:1rem;">+ New Order</button>
-            <div style="font-weight:600; margin-bottom:0.5rem;">Today's Orders</div>
-            <div id="popupOrdersContainer">${ordersHtml}</div>
-            <div style="margin-top:1rem; text-align:center;">
-                <button id="popupDeleteCustomerBtn" class="btn-danger">Delete Customer</button>
-            </div>
-        `;
+        const popupBody = document.getElementById("popupBody");
+        if (popupBody) {
+            popupBody.innerHTML = `
+                <div class="customer-info-popup">
+                    <h2>${escapeHtml(cust.name)} 
+                        <span class="customer-face-status ${hasFace ? 'has-face' : 'no-face'}">${hasFace ? '✅ Face Registered' : '❌ No Face'}</span>
+                    </h2>
+                    <p>${escapeHtml(cust.phone)} · ${custOrders.length} order(s) today</p>
+                    ${!hasFace ? '<p style="color:#e67e22; font-size:0.8rem;">⚠️ No face registered. Face recognition not available.</p>' : ''}
+                </div>
+                <button id="popupNewOrderBtn" class="btn-primary" style="width:100%; margin-bottom:0.5rem;">+ New Order</button>
+                ${hasFace ? `<button id="popupVerifyFaceBtn" class="btn-face" style="width:100%; margin-bottom:1rem;">🔐 Verify with Face</button>` : ''}
+                <div style="font-weight:600; margin-bottom:0.5rem;">Today's Orders</div>
+                <div id="popupOrdersContainer">${ordersHtml}</div>
+                <div style="margin-top:1rem; text-align:center;">
+                    <button id="popupDeleteCustomerBtn" class="btn-danger">Delete Customer</button>
+                </div>
+            `;
+        }
         
-        document.getElementById("popupNewOrderBtn").onclick = () => {
+        const newOrderBtn = document.getElementById("popupNewOrderBtn");
+        if (newOrderBtn) newOrderBtn.onclick = () => {
             closeCustomerPopup();
             openOrderModalForCustomer(customerId);
         };
-        document.getElementById("popupDeleteCustomerBtn").onclick = () => {
+        
+        const verifyFaceBtn = document.getElementById("popupVerifyFaceBtn");
+        if (verifyFaceBtn) verifyFaceBtn.onclick = () => {
+            closeCustomerPopup();
+            openFaceVerification(customerId);
+        };
+        
+        const deleteBtn = document.getElementById("popupDeleteCustomerBtn");
+        if (deleteBtn) deleteBtn.onclick = () => {
             closeCustomerPopup();
             requestDeletePassword(customerId);
         };
         
-        document.getElementById("customerPopup").classList.add("active");
+        const popup = document.getElementById("customerPopup");
+        if (popup) popup.classList.add("active");
     }
 
     function closeCustomerPopup() {
-        document.getElementById("customerPopup").classList.remove("active");
+        const popup = document.getElementById("customerPopup");
+        if (popup) popup.classList.remove("active");
         currentPopupCustomerId = null;
     }
 
-    // Order Modal Functions
+    // ========== FACE RECOGNITION FUNCTIONS ==========
+    
+    // Simple face detection using Face API (browser's built-in face detection)
+    async function detectFace(videoElement) {
+        if (!('FaceDetector' in window)) {
+            console.warn('FaceDetector not supported in this browser');
+            return null;
+        }
+        
+        try {
+            const faceDetector = new FaceDetector({
+                maxDetectedFaces: 1,
+                fastMode: true
+            });
+            
+            const faces = await faceDetector.detect(videoElement);
+            if (faces.length > 0) {
+                return faces[0];
+            }
+            return null;
+        } catch (error) {
+            console.error('Face detection error:', error);
+            return null;
+        }
+    }
+
+    // Generate a simple face descriptor (hash of bounding box + dimensions)
+    function generateFaceDescriptor(face) {
+        if (!face) return null;
+        // Create a simple descriptor based on face bounding box and landmarks
+        const bbox = face.boundingBox;
+        const landmarks = face.landmarks || [];
+        
+        let descriptor = [
+            bbox.x || 0,
+            bbox.y || 0,
+            bbox.width || 0,
+            bbox.height || 0
+        ];
+        
+        // Add landmark data if available
+        landmarks.forEach(landmark => {
+            if (landmark.locations) {
+                landmark.locations.forEach(loc => {
+                    descriptor.push(loc.x || 0);
+                    descriptor.push(loc.y || 0);
+                });
+            }
+        });
+        
+        // Create a simple hash
+        return btoa(descriptor.join(','));
+    }
+
+    // Compare two face descriptors (simple similarity check)
+    function compareFaceDescriptors(desc1, desc2) {
+        if (!desc1 || !desc2) return false;
+        // Simple comparison - check if they are exactly the same
+        // In a real implementation, you'd use a proper face recognition library
+        // This is a simplified version for demonstration
+        return desc1 === desc2;
+    }
+
+    // Start camera for face capture
+    async function startCamera(videoElement, statusElement, buttonElement) {
+        try {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+            }
+            
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: 'user',
+                    width: { ideal: 320 },
+                    height: { ideal: 240 }
+                }
+            });
+            
+            currentStream = stream;
+            videoElement.srcObject = stream;
+            await videoElement.play();
+            isCameraActive = true;
+            
+            if (statusElement) {
+                statusElement.textContent = 'Camera ready. Look at the camera.';
+                statusElement.className = 'status-text';
+            }
+            if (buttonElement) {
+                buttonElement.disabled = false;
+                buttonElement.textContent = '📸 Capture Face';
+            }
+            
+            return true;
+        } catch (error) {
+            console.error('Camera error:', error);
+            if (statusElement) {
+                statusElement.textContent = '❌ Camera access denied. Please allow camera access.';
+                statusElement.className = 'status-text error';
+            }
+            return false;
+        }
+    }
+
+    // Stop camera
+    function stopCamera(videoElement) {
+        if (currentStream) {
+            currentStream.getTracks().forEach(track => track.stop());
+            currentStream = null;
+        }
+        if (videoElement) {
+            videoElement.srcObject = null;
+        }
+        isCameraActive = false;
+    }
+
+    // Capture face from video
+    async function captureFace(videoElement, statusElement) {
+        if (!isCameraActive || !videoElement) {
+            if (statusElement) {
+                statusElement.textContent = '⚠️ Please start camera first.';
+                statusElement.className = 'status-text error';
+            }
+            return null;
+        }
+        
+        try {
+            const face = await detectFace(videoElement);
+            if (face) {
+                const descriptor = generateFaceDescriptor(face);
+                if (statusElement) {
+                    statusElement.textContent = '✅ Face captured successfully!';
+                    statusElement.className = 'status-text success';
+                }
+                return descriptor;
+            } else {
+                if (statusElement) {
+                    statusElement.textContent = '❌ No face detected. Please look at the camera.';
+                    statusElement.className = 'status-text error';
+                }
+                return null;
+            }
+        } catch (error) {
+            console.error('Capture error:', error);
+            if (statusElement) {
+                statusElement.textContent = '❌ Error capturing face. Please try again.';
+                statusElement.className = 'status-text error';
+            }
+            return null;
+        }
+    }
+
+    // Open face verification modal
+    function openFaceVerification(customerId) {
+        pendingVerificationCustomerId = customerId;
+        const modal = document.getElementById('faceVerificationModal');
+        if (modal) modal.classList.add('active');
+        
+        // Reset video and status
+        const video = document.getElementById('verificationVideo');
+        const status = document.getElementById('verificationStatus');
+        const startBtn = document.getElementById('startVerificationCamera');
+        const verifyBtn = document.getElementById('verifyFaceBtn');
+        
+        if (video) video.srcObject = null;
+        if (status) {
+            status.textContent = 'Click "Start Camera" to begin.';
+            status.className = 'status-text';
+        }
+        if (startBtn) startBtn.disabled = false;
+        if (verifyBtn) verifyBtn.disabled = true;
+    }
+
+    // Close face verification modal
+    function closeFaceVerification() {
+        const modal = document.getElementById('faceVerificationModal');
+        if (modal) modal.classList.remove('active');
+        stopCamera(document.getElementById('verificationVideo'));
+        pendingVerificationCustomerId = null;
+    }
+
+    // Verify face for customer
+    async function verifyFace() {
+        const video = document.getElementById('verificationVideo');
+        const status = document.getElementById('verificationStatus');
+        
+        if (!isCameraActive || !video) {
+            if (status) {
+                status.textContent = '⚠️ Please start camera first.';
+                status.className = 'status-text error';
+            }
+            return;
+        }
+        
+        if (!pendingVerificationCustomerId) {
+            if (status) {
+                status.textContent = '❌ No customer selected.';
+                status.className = 'status-text error';
+            }
+            return;
+        }
+        
+        const customer = getCustomerById(pendingVerificationCustomerId);
+        if (!customer) {
+            if (status) {
+                status.textContent = '❌ Customer not found.';
+                status.className = 'status-text error';
+            }
+            return;
+        }
+        
+        if (!customer.faceDescriptor) {
+            if (status) {
+                status.textContent = '❌ Customer has no registered face.';
+                status.className = 'status-text error';
+            }
+            return;
+        }
+        
+        try {
+            const face = await detectFace(video);
+            if (face) {
+                const descriptor = generateFaceDescriptor(face);
+                const isMatch = compareFaceDescriptors(descriptor, customer.faceDescriptor);
+                
+                if (isMatch) {
+                    if (status) {
+                        status.textContent = '✅ Face verified successfully! Opening customer profile...';
+                        status.className = 'status-text success';
+                    }
+                    // Close verification and open customer popup
+                    setTimeout(() => {
+                        closeFaceVerification();
+                        openCustomerPopup(pendingVerificationCustomerId);
+                    }, 1000);
+                } else {
+                    if (status) {
+                        status.textContent = '❌ Face does not match registered customer. Please try again.';
+                        status.className = 'status-text error';
+                    }
+                }
+            } else {
+                if (status) {
+                    status.textContent = '❌ No face detected. Please look at the camera.';
+                    status.className = 'status-text error';
+                }
+            }
+        } catch (error) {
+            console.error('Verification error:', error);
+            if (status) {
+                status.textContent = '❌ Error during verification. Please try again.';
+                status.className = 'status-text error';
+            }
+        }
+    }
+
+    // ========== ORDER MODAL FUNCTIONS ==========
+    
     function openOrderModalForCustomer(customerId) {
         const cust = getCustomerById(customerId);
         if (!cust) return;
         currentModalCustomerId = customerId;
         currentModalCart = [];
-        document.getElementById("modalCustomerName").innerText = cust.name;
+        const modalNameSpan = document.getElementById("modalCustomerName");
+        if (modalNameSpan) modalNameSpan.innerText = cust.name;
         renderModalMenu();
         updateModalCartUI();
-        document.getElementById("orderModal").classList.add("active");
+        const orderModal = document.getElementById("orderModal");
+        if (orderModal) orderModal.classList.add("active");
     }
 
     function renderModalMenu() {
         const grid = document.getElementById("modalMenuGrid");
+        if (!grid) return;
         grid.innerHTML = "";
         db.menuItems.forEach(item => {
             const isAvailable = isItemAvailableNow(item);
@@ -839,8 +1773,10 @@
                 ${timeInfo}
             `;
             if (isAvailable) {
-                div.querySelector('.minus').onclick = (e) => { e.stopPropagation(); updateModalItemQuantity(item.id, -1); };
-                div.querySelector('.plus').onclick = (e) => { e.stopPropagation(); updateModalItemQuantity(item.id, 1); };
+                const minusBtn = div.querySelector('.minus');
+                const plusBtn = div.querySelector('.plus');
+                if (minusBtn) minusBtn.onclick = (e) => { e.stopPropagation(); updateModalItemQuantity(item.id, -1); };
+                if (plusBtn) plusBtn.onclick = (e) => { e.stopPropagation(); updateModalItemQuantity(item.id, 1); };
             }
             grid.appendChild(div);
         });
@@ -866,6 +1802,7 @@
     function updateModalCartUI() {
         const container = document.getElementById("modalCartItems");
         const totalSpan = document.getElementById("modalTotal");
+        if (!container || !totalSpan) return;
         if (currentModalCart.length === 0) {
             container.innerHTML = "<div style='color:#b87a4a; text-align:center;'>No items added. Use +/- to order.</div>";
             totalSpan.innerText = `${CURRENCY}0.00`;
@@ -886,28 +1823,48 @@
         const now = new Date();
         const formattedDate = `${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} · ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
         const total = currentModalCart.reduce((s, i) => s + (i.price * i.quantity), 0);
-        db.orders.push({
+        const newOrder = {
             id: "ord_" + Date.now(),
             customerId: currentModalCustomerId,
             date: formattedDate,
             timestamp: Date.now(),
             items: currentModalCart.map(i => ({ name: i.name, price: i.price, quantity: i.quantity })),
             total: parseFloat(total.toFixed(2))
-        });
+        };
+        db.orders.push(newOrder);
+        
+        orderHighlightStartTime.set(newOrder.id, newOrder.timestamp);
+        
         saveDatabase();
         closeOrderModal();
         renderGuests();
+        
+        if (document.getElementById("dashboardView").classList.contains("active")) {
+            renderDashboard();
+        }
+        
         alert(`Order saved! Total: ${CURRENCY}${total.toFixed(2)}`);
     }
 
     function closeOrderModal() {
-        document.getElementById("orderModal").classList.remove("active");
+        const orderModal = document.getElementById("orderModal");
+        if (orderModal) orderModal.classList.remove("active");
         currentModalCart = [];
     }
 
-    // Dashboard with Customer Order History
     function renderDashboard() {
         const container = document.getElementById("dashboardContent");
+        if (!container) return;
+        
+        const now = Date.now();
+        let needsRefresh = false;
+        for (let [orderId, startTime] of orderHighlightStartTime.entries()) {
+            if (now - startTime >= 300000 && !clickedOrders.has(orderId)) {
+                clickedOrders.add(orderId);
+                needsRefresh = true;
+            }
+        }
+        
         const menuTotals = new Map();
         db.orders.forEach(order => {
             order.items.forEach(item => {
@@ -922,59 +1879,132 @@
         const uniqueCust = new Set(db.orders.map(o => o.customerId)).size;
         
         let menuSummaryHtml = "";
-        if (menuTotals.size === 0) menuSummaryHtml = `<tr><td colspan="3">No orders today</td></tr>`;
+        if (menuTotals.size === 0) menuSummaryHtml = `<tr><td colspan="3" style="text-align:center;">No orders today</td></td>`;
         else for (let [name, data] of menuTotals.entries()) menuSummaryHtml += `<tr><td>${escapeHtml(name)}</td><td>${data.quantity}</td><td>${CURRENCY}${data.revenue.toFixed(2)}</td></tr>`;
         
-        // Customer order history
         const customersWithOrders = new Map();
         db.orders.forEach(order => {
             const cust = getCustomerById(order.customerId);
             const customerName = cust ? cust.name : "Unknown";
             if (!customersWithOrders.has(order.customerId)) {
-                customersWithOrders.set(order.customerId, { name: customerName, phone: cust ? cust.phone : "", orders: [] });
+                customersWithOrders.set(order.customerId, { 
+                    name: customerName, 
+                    phone: cust ? cust.phone : "", 
+                    orders: [],
+                    latestOrderTime: 0
+                });
             }
-            customersWithOrders.get(order.customerId).orders.push(order);
+            const customerData = customersWithOrders.get(order.customerId);
+            customerData.orders.push(order);
+            if (order.timestamp > customerData.latestOrderTime) {
+                customerData.latestOrderTime = order.timestamp;
+            }
         });
         
+        const sortedCustomers = Array.from(customersWithOrders.values()).sort((a, b) => b.latestOrderTime - a.latestOrderTime);
+        
         let customerHistoryHtml = "";
-        const sortedCustomers = Array.from(customersWithOrders.values()).sort((a, b) => a.name.localeCompare(b.name));
+        
         if (sortedCustomers.length === 0) {
             customerHistoryHtml = '<div class="empty-state">No orders placed today.</div>';
         } else {
             sortedCustomers.forEach(customer => {
                 const sortedOrders = customer.orders.sort((a, b) => b.timestamp - a.timestamp);
-                let orderRows = "";
+                let orderCardsHtml = "";
+                
                 sortedOrders.forEach(order => {
-                    let itemsText = order.items.map(i => `${i.quantity}x ${i.name}`).join(", ");
-                    orderRows += `<tr><td style="white-space: nowrap;">${order.date}</td><td>${itemsText}</td><td style="text-align: right;">${CURRENCY}${order.total.toFixed(2)}</td></tr>`;
+                    const highlight = shouldHighlightOrder(order.id, order.timestamp);
+                    const itemsText = order.items.map(i => `${i.quantity}x ${i.name}`).join(", ");
+                    orderCardsHtml += `
+                        <div class="order-card ${highlight ? 'new-order' : ''}" data-order-id="${order.id}" onclick="window.handleOrderClick('${order.id}')">
+                            <div class="order-date">🕐 ${order.date}</div>
+                            <div class="order-item-line">📋 ${itemsText}</div>
+                            <div class="order-total">💰 Total ${CURRENCY}${order.total.toFixed(2)}</div>
+                        </div>
+                    `;
                 });
+                
                 customerHistoryHtml += `
-                    <div style="margin-bottom:1rem; border:1px solid #efe2d4; border-radius:1rem; overflow:hidden;">
-                        <div style="background:#fcf5ea; padding:0.5rem 1rem; font-weight:600;">${escapeHtml(customer.name)} · ${customer.phone} · ${customer.orders.length} order(s)</div>
-                        <table style="width:100%; font-size:0.8rem;"><tbody>${orderRows}</tbody></table>
+                    <div class="customer-order-group">
+                        <div class="customer-header">
+                            <span>👤 ${escapeHtml(customer.name)} · 📞 ${customer.phone}</span>
+                            <span class="order-count-badge">${customer.orders.length} order(s)</span>
+                        </div>
+                        <div class="orders-list">
+                            ${orderCardsHtml}
+                        </div>
                     </div>
                 `;
             });
         }
         
         container.innerHTML = `
+            <div class="dashboard-header">
+                <div class="refresh-indicator">
+                    <div class="refresh-spinner"></div>
+                    <span>Auto-refresh every 3s</span>
+                </div>
+                <div id="syncStatus" class="sync-status">Checking...</div>
+            </div>
             <div class="dashboard-stats">
                 <div class="stat-card"><div class="stat-number">${totalOrders}</div><div>Today's Orders</div></div>
                 <div class="stat-card"><div class="stat-number">${CURRENCY}${totalRevenue.toFixed(2)}</div><div>Revenue</div></div>
                 <div class="stat-card"><div class="stat-number">${uniqueCust}</div><div>Customers</div></div>
             </div>
-            <div class="summary-table"><div class="section-title">Menu Summary</div><table><thead><tr><th>Item</th><th>Qty</th><th>Revenue</th></tr></thead><tbody>${menuSummaryHtml}</tbody></table></div>
-            <div class="history-table"><div class="section-title">Customer Order History</div>${customerHistoryHtml}<div style="font-size:0.7rem; color:#b28b65; text-align:center; margin-top:1rem;">Orders reset daily at midnight</div></div>
+            <div class="summary-table">
+                <div class="section-title">
+                    <span>📊 Menu Summary</span>
+                    <button id="exportExcelBtn" class="btn-excel">📎 Export to Excel</button>
+                </div>
+                <table>
+                    <thead><tr><th>Item</th><th>Qty</th><th>Revenue</th></tr></thead>
+                    <tbody>${menuSummaryHtml}</tbody>
+                </table>
+            </div>
+            <div class="history-table">
+                <div class="section-title">📋 Customer Order History (By Latest Order)</div>
+                ${customerHistoryHtml}
+                <div style="font-size:0.7rem; color:#b28b65; text-align:center; margin-top:1rem; padding:0.5rem;">
+                    🟡 <strong>Yellow highlight</strong> = New order (last 5 minutes) - <strong>Click to remove highlight immediately!</strong>
+                </div>
+            </div>
         `;
+        
+        const exportBtn = document.getElementById("exportExcelBtn");
+        if (exportBtn) {
+            exportBtn.onclick = exportToExcel;
+        }
+        
+        if (firebaseInitialized) {
+            updateSyncStatus(true, "Connected");
+        } else {
+            updateSyncStatus(false, "Offline");
+        }
     }
 
-    // Menu Management (simplified)
+    window.handleOrderClick = function(orderId) {
+        console.log("Click handler triggered for order:", orderId);
+        markOrderAsClicked(orderId);
+    };
+
     function renderMenuManagement() {
         const container = document.getElementById("menuManagementContent");
-        let html = `<div class="add-menu-form"><div class="form-group"><label>Dish name</label><input type="text" id="newMenuName"></div><div class="form-group"><label>Price</label><input type="number" id="newMenuPrice" step="0.01"></div><button id="addMenuSubmitBtn" class="btn-primary">+ Add</button></div><div class="menu-items-grid" id="menuItemsGrid"></div>`;
+        if (!container) return;
+        
+        let html = `
+            <div class="add-menu-form">
+                <div class="form-group"><label>Dish name</label><input type="text" id="newMenuName"></div>
+                <div class="form-group"><label>Price</label><input type="number" id="newMenuPrice" step="0.01"></div>
+                <button id="addMenuSubmitBtn" class="btn-primary">+ Add</button>
+            </div>
+            <div class="menu-items-grid" id="menuItemsGrid"></div>
+        `;
         container.innerHTML = html;
+        
         const grid = document.getElementById("menuItemsGrid");
+        if (!grid) return;
         grid.innerHTML = "";
+        
         db.menuItems.forEach(item => {
             const isAvailNow = isItemAvailableNow(item);
             const card = document.createElement("div");
@@ -985,27 +2015,39 @@
                 <input type="time" class="time-start" data-id="${item.id}" value="${item.timeStart}" ${!item.useTimeLimit ? 'disabled' : ''}>
                 <span>to</span><input type="time" class="time-end" data-id="${item.id}" value="${item.timeEnd}" ${!item.useTimeLimit ? 'disabled' : ''}></div>
                 <div class="menu-actions"><button class="btn-icon edit-menu" data-id="${item.id}">Edit</button><button class="btn-icon delete-menu" data-id="${item.id}">Delete</button></div>`;
-            card.querySelector('.avail-checkbox').onclick = () => { item.available = !item.available; saveDatabase(); renderMenuManagement(); };
+            const availCheck = card.querySelector('.avail-checkbox');
+            if (availCheck) availCheck.onclick = () => { item.available = !item.available; saveDatabase(); renderMenuManagement(); };
             const limitCheck = card.querySelector('.time-limit-checkbox');
-            limitCheck.onclick = () => { item.useTimeLimit = !item.useTimeLimit; saveDatabase(); renderMenuManagement(); };
-            card.querySelector('.time-start').onchange = (e) => { item.timeStart = e.target.value; saveDatabase(); };
-            card.querySelector('.time-end').onchange = (e) => { item.timeEnd = e.target.value; saveDatabase(); };
-            card.querySelector(".edit-menu").onclick = () => editMenuItem(item.id);
-            card.querySelector(".delete-menu").onclick = () => deleteMenuItem(item.id);
+            if (limitCheck) limitCheck.onclick = () => { item.useTimeLimit = !item.useTimeLimit; saveDatabase(); renderMenuManagement(); };
+            const timeStart = card.querySelector('.time-start');
+            if (timeStart) timeStart.onchange = (e) => { item.timeStart = e.target.value; saveDatabase(); };
+            const timeEnd = card.querySelector('.time-end');
+            if (timeEnd) timeEnd.onchange = (e) => { item.timeEnd = e.target.value; saveDatabase(); };
+            const editBtn = card.querySelector(".edit-menu");
+            if (editBtn) editBtn.onclick = () => editMenuItem(item.id);
+            const deleteBtn = card.querySelector(".delete-menu");
+            if (deleteBtn) deleteBtn.onclick = () => deleteMenuItem(item.id);
             grid.appendChild(card);
         });
-        document.getElementById("addMenuSubmitBtn").onclick = addMenuItem;
+        
+        const addBtn = document.getElementById("addMenuSubmitBtn");
+        if (addBtn) addBtn.onclick = addMenuItem;
     }
 
     function addMenuItem() {
-        const name = document.getElementById("newMenuName").value.trim();
-        const price = parseFloat(document.getElementById("newMenuPrice").value);
+        const nameInput = document.getElementById("newMenuName");
+        const priceInput = document.getElementById("newMenuPrice");
+        if (!nameInput || !priceInput) return;
+        const name = nameInput.value.trim();
+        const price = parseFloat(priceInput.value);
         if (!name || isNaN(price) || price <= 0) return alert("Valid name & price");
         db.menuItems.push({ id: nextMenuId++, name, price, available: true, useTimeLimit: false, timeStart: "00:00", timeEnd: "23:59" });
         saveDatabase();
         renderMenuManagement();
-        document.getElementById("newMenuName").value = ""; document.getElementById("newMenuPrice").value = "";
+        nameInput.value = "";
+        priceInput.value = "";
     }
+    
     function editMenuItem(id) {
         const item = db.menuItems.find(i => i.id === id);
         if (!item) return;
@@ -1015,35 +2057,86 @@
         if (!isNaN(newPrice) && newPrice > 0) item.price = newPrice;
         saveDatabase(); renderMenuManagement();
     }
+    
     function deleteMenuItem(id) {
         if (confirm("Remove this item?")) { db.menuItems = db.menuItems.filter(i => i.id !== id); saveDatabase(); renderMenuManagement(); }
     }
 
-    // Customer CRUD
     function openAddCustomerModal() {
-        document.getElementById("customerName").value = "";
-        document.getElementById("customerPhone").value = "";
-        document.getElementById("customerModal").classList.add("active");
+        const nameInput = document.getElementById("customerName");
+        const phoneInput = document.getElementById("customerPhone");
+        if (nameInput) nameInput.value = "";
+        if (phoneInput) phoneInput.value = "";
+        
+        // Reset face registration UI
+        registrationFaceData = null;
+        const status = document.getElementById('registrationStatus');
+        if (status) {
+            status.textContent = 'Click "Start Camera" to register your face.';
+            status.className = 'status-text';
+        }
+        const captureBtn = document.getElementById('captureFaceBtn');
+        if (captureBtn) {
+            captureBtn.disabled = true;
+            captureBtn.textContent = '📸 Capture Face';
+        }
+        const startBtn = document.getElementById('startRegistrationCamera');
+        if (startBtn) {
+            startBtn.disabled = false;
+            startBtn.textContent = '📷 Start Camera';
+        }
+        
+        // Stop any existing camera
+        stopCamera(document.getElementById('registrationVideo'));
+        
+        const modal = document.getElementById("customerModal");
+        if (modal) modal.classList.add("active");
     }
+    
     function saveCustomerFromModal() {
-        const name = document.getElementById("customerName").value.trim();
-        const phone = document.getElementById("customerPhone").value.trim();
+        const nameInput = document.getElementById("customerName");
+        const phoneInput = document.getElementById("customerPhone");
+        const name = nameInput ? nameInput.value.trim() : "";
+        const phone = phoneInput ? phoneInput.value.trim() : "";
         if (!name || !phone) { alert("Name and phone required"); return; }
-        db.customers.push({ id: "c" + Date.now() + "_" + Math.random().toString(36).substr(2, 6), name, phone, createdAt: Date.now() });
+        
+        const newCustomer = { 
+            id: "c" + Date.now() + "_" + Math.random().toString(36).substr(2, 6), 
+            name, 
+            phone, 
+            createdAt: Date.now(),
+            faceDescriptor: registrationFaceData || null
+        };
+        
+        db.customers.push(newCustomer);
         saveDatabase();
         renderGuests();
-        document.getElementById("customerModal").classList.remove("active");
-        alert(`Customer "${name}" added!`);
+        
+        const modal = document.getElementById("customerModal");
+        if (modal) modal.classList.remove("active");
+        
+        // Stop camera
+        stopCamera(document.getElementById('registrationVideo'));
+        
+        alert(`Customer "${name}" added!${registrationFaceData ? ' Face registered successfully.' : ''}`);
     }
 
     function requestDeletePassword(customerId) {
         pendingDeleteCustomerId = customerId;
-        document.getElementById("deletePassInput").value = "";
-        document.getElementById("deletePasswordModal").classList.add("active");
+        const passInput = document.getElementById("deletePassInput");
+        if (passInput) passInput.value = "";
+        const modal = document.getElementById("deletePasswordModal");
+        if (modal) modal.classList.add("active");
     }
+    
     function confirmDeleteWithPassword() {
-        const pwd = document.getElementById("deletePassInput").value;
-        if (pwd !== ADMIN_PASSWORD) { alert("Wrong password!"); document.getElementById("deletePasswordModal").classList.remove("active"); return; }
+        const passInput = document.getElementById("deletePassInput");
+        const pwd = passInput ? passInput.value : "";
+        if (pwd !== ADMIN_PASSWORD) { alert("Wrong password!"); 
+            const modal = document.getElementById("deletePasswordModal");
+            if (modal) modal.classList.remove("active");
+            return; 
+        }
         if (pendingDeleteCustomerId) {
             db.orders = db.orders.filter(o => o.customerId !== pendingDeleteCustomerId);
             db.customers = db.customers.filter(c => c.id !== pendingDeleteCustomerId);
@@ -1051,63 +2144,201 @@
             renderGuests();
             alert("Customer deleted.");
         }
-        document.getElementById("deletePasswordModal").classList.remove("active");
+        const modal = document.getElementById("deletePasswordModal");
+        if (modal) modal.classList.remove("active");
         pendingDeleteCustomerId = null;
     }
-    function cancelDelete() { document.getElementById("deletePasswordModal").classList.remove("active"); pendingDeleteCustomerId = null; }
+    
+    function cancelDelete() { 
+        const modal = document.getElementById("deletePasswordModal");
+        if (modal) modal.classList.remove("active"); 
+        pendingDeleteCustomerId = null; 
+    }
 
-    // Password for Dashboard & Menu
     function requestPassword(viewName) {
         activeProtectedView = viewName;
-        document.getElementById("adminPassInput").value = "";
-        document.getElementById("passwordModal").classList.add("active");
+        const passInput = document.getElementById("adminPassInput");
+        if (passInput) passInput.value = "";
+        const modal = document.getElementById("passwordModal");
+        if (modal) modal.classList.add("active");
     }
+    
     function verifyPassword() {
-        const pwd = document.getElementById("adminPassInput").value;
+        const passInput = document.getElementById("adminPassInput");
+        const pwd = passInput ? passInput.value : "";
         if (pwd === ADMIN_PASSWORD) {
-            document.getElementById("passwordModal").classList.remove("active");
-            if (activeProtectedView === "dashboard") { renderDashboard(); document.getElementById("dashboardView").classList.add("active"); document.getElementById("ordersView").classList.remove("active"); document.getElementById("menuView").classList.remove("active"); updateNavActive("dashboardViewBtn"); }
-            else if (activeProtectedView === "menu") { renderMenuManagement(); document.getElementById("menuView").classList.add("active"); document.getElementById("ordersView").classList.remove("active"); document.getElementById("dashboardView").classList.remove("active"); updateNavActive("menuViewBtn"); }
+            const modal = document.getElementById("passwordModal");
+            if (modal) modal.classList.remove("active");
+            if (activeProtectedView === "dashboard") { 
+                renderDashboard(); 
+                document.getElementById("dashboardView").classList.add("active"); 
+                document.getElementById("ordersView").classList.remove("active"); 
+                document.getElementById("menuView").classList.remove("active"); 
+                updateNavActive("dashboardViewBtn"); 
+                startDashboardAutoRefresh();
+            }
+            else if (activeProtectedView === "menu") { 
+                renderMenuManagement(); 
+                document.getElementById("menuView").classList.add("active"); 
+                document.getElementById("ordersView").classList.remove("active"); 
+                document.getElementById("dashboardView").classList.remove("active"); 
+                updateNavActive("menuViewBtn"); 
+                stopDashboardAutoRefresh();
+            }
         } else { alert("Wrong password!"); }
         activeProtectedView = null;
     }
-    function updateNavActive(activeId) { document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.remove("active")); document.getElementById(activeId).classList.add("active"); }
-    function cancelPassword() { document.getElementById("passwordModal").classList.remove("active"); activeProtectedView = null; }
+    
+    function updateNavActive(activeId) { 
+        document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.remove("active")); 
+        const activeBtn = document.getElementById(activeId);
+        if (activeBtn) activeBtn.classList.add("active");
+    }
+    
+    function cancelPassword() { 
+        const modal = document.getElementById("passwordModal");
+        if (modal) modal.classList.remove("active"); 
+        activeProtectedView = null; 
+    }
 
     function initNavigation() {
-        document.getElementById("ordersViewBtn").onclick = () => {
+        const ordersBtn = document.getElementById("ordersViewBtn");
+        const dashboardBtn = document.getElementById("dashboardViewBtn");
+        const menuBtn = document.getElementById("menuViewBtn");
+        
+        if (ordersBtn) ordersBtn.onclick = () => {
             document.getElementById("ordersView").classList.add("active");
             document.getElementById("dashboardView").classList.remove("active");
             document.getElementById("menuView").classList.remove("active");
             updateNavActive("ordersViewBtn");
             renderGuests();
+            stopDashboardAutoRefresh();
         };
-        document.getElementById("dashboardViewBtn").onclick = () => requestPassword("dashboard");
-        document.getElementById("menuViewBtn").onclick = () => requestPassword("menu");
+        if (dashboardBtn) dashboardBtn.onclick = () => requestPassword("dashboard");
+        if (menuBtn) menuBtn.onclick = () => requestPassword("menu");
     }
 
     function bindEvents() {
-        document.getElementById("addCustomerBtn").onclick = openAddCustomerModal;
-        document.getElementById("closeOrderModalBtn").onclick = closeOrderModal;
-        document.getElementById("saveOrderBtn").onclick = saveModalOrder;
-        document.getElementById("clearCartBtn").onclick = () => { currentModalCart = []; updateModalCartUI(); renderModalMenu(); };
-        document.getElementById("closeCustomerModalBtn").onclick = () => document.getElementById("customerModal").classList.remove("active");
-        document.getElementById("saveCustomerModalBtn").onclick = saveCustomerFromModal;
-        document.getElementById("submitPasswordBtn").onclick = verifyPassword;
-        document.getElementById("cancelPasswordBtn").onclick = cancelPassword;
-        document.getElementById("confirmDeleteBtn").onclick = confirmDeleteWithPassword;
-        document.getElementById("cancelDeleteBtn").onclick = cancelDelete;
-        document.getElementById("closePopupBtn").onclick = closeCustomerPopup;
-        document.getElementById("customerPopup").addEventListener("click", (e) => { if (e.target === document.getElementById("customerPopup")) closeCustomerPopup(); });
+        const addCustomerBtn = document.getElementById("addCustomerBtn");
+        if (addCustomerBtn) addCustomerBtn.onclick = openAddCustomerModal;
+        
+        const closeOrderBtn = document.getElementById("closeOrderModalBtn");
+        if (closeOrderBtn) closeOrderBtn.onclick = closeOrderModal;
+        
+        const saveOrderBtn = document.getElementById("saveOrderBtn");
+        if (saveOrderBtn) saveOrderBtn.onclick = saveModalOrder;
+        
+        const clearCartBtn = document.getElementById("clearCartBtn");
+        if (clearCartBtn) clearCartBtn.onclick = () => { currentModalCart = []; updateModalCartUI(); renderModalMenu(); };
+        
+        const closeCustomerModalBtn = document.getElementById("closeCustomerModalBtn");
+        if (closeCustomerModalBtn) closeCustomerModalBtn.onclick = () => {
+            const modal = document.getElementById("customerModal");
+            if (modal) modal.classList.remove("active");
+            stopCamera(document.getElementById('registrationVideo'));
+        };
+        
+        const saveCustomerBtn = document.getElementById("saveCustomerModalBtn");
+        if (saveCustomerBtn) saveCustomerBtn.onclick = saveCustomerFromModal;
+        
+        const submitPasswordBtn = document.getElementById("submitPasswordBtn");
+        if (submitPasswordBtn) submitPasswordBtn.onclick = verifyPassword;
+        
+        const cancelPasswordBtn = document.getElementById("cancelPasswordBtn");
+        if (cancelPasswordBtn) cancelPasswordBtn.onclick = cancelPassword;
+        
+        const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+        if (confirmDeleteBtn) confirmDeleteBtn.onclick = confirmDeleteWithPassword;
+        
+        const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+        if (cancelDeleteBtn) cancelDeleteBtn.onclick = cancelDelete;
+        
+        const closePopupBtn = document.getElementById("closePopupBtn");
+        if (closePopupBtn) closePopupBtn.onclick = closeCustomerPopup;
+        
+        const customerPopup = document.getElementById("customerPopup");
+        if (customerPopup) customerPopup.addEventListener("click", (e) => { if (e.target === customerPopup) closeCustomerPopup(); });
+        
+        // Face Recognition - Registration
+        const startRegBtn = document.getElementById('startRegistrationCamera');
+        if (startRegBtn) {
+            startRegBtn.onclick = async () => {
+                const video = document.getElementById('registrationVideo');
+                const status = document.getElementById('registrationStatus');
+                const captureBtn = document.getElementById('captureFaceBtn');
+                const success = await startCamera(video, status, captureBtn);
+                if (success) {
+                    startRegBtn.textContent = '📷 Restart Camera';
+                }
+            };
+        }
+        
+        const captureBtn = document.getElementById('captureFaceBtn');
+        if (captureBtn) {
+            captureBtn.onclick = async () => {
+                const video = document.getElementById('registrationVideo');
+                const status = document.getElementById('registrationStatus');
+                const descriptor = await captureFace(video, status);
+                if (descriptor) {
+                    registrationFaceData = descriptor;
+                    captureBtn.textContent = '✅ Captured!';
+                    captureBtn.style.background = '#27ae60';
+                } else {
+                    registrationFaceData = null;
+                    captureBtn.textContent = '📸 Capture Face';
+                    captureBtn.style.background = '';
+                }
+            };
+        }
+        
+        // Face Recognition - Verification
+        const startVerBtn = document.getElementById('startVerificationCamera');
+        if (startVerBtn) {
+            startVerBtn.onclick = async () => {
+                const video = document.getElementById('verificationVideo');
+                const status = document.getElementById('verificationStatus');
+                const verifyBtn = document.getElementById('verifyFaceBtn');
+                const success = await startCamera(video, status, verifyBtn);
+                if (success) {
+                    startVerBtn.textContent = '📷 Restart Camera';
+                }
+            };
+        }
+        
+        const verifyBtn = document.getElementById('verifyFaceBtn');
+        if (verifyBtn) {
+            verifyBtn.onclick = verifyFace;
+        }
+        
+        const cancelVerBtn = document.getElementById('cancelVerificationBtn');
+        if (cancelVerBtn) {
+            cancelVerBtn.onclick = closeFaceVerification;
+        }
+        
+        // Close face verification on backdrop click
+        const verModal = document.getElementById('faceVerificationModal');
+        if (verModal) {
+            verModal.addEventListener('click', (e) => {
+                if (e.target === verModal) closeFaceVerification();
+            });
+        }
     }
 
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ return m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'; }); }
 
-    function init() {
+    async function init() {
         loadDatabase();
         renderGuests();
         bindEvents();
         initNavigation();
+        scheduleMidnightReset();
+        setupVisibilityCheck();
+        setupPeriodicCheck();
+        await initFirebase();
+        
+        if (document.getElementById("dashboardView").classList.contains("active")) {
+            startDashboardAutoRefresh();
+        }
     }
     init();
 </script>
