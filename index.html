@@ -296,6 +296,11 @@
             cursor: pointer;
         }
 
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         /* Guests Sidebar */
         .guests-sidebar {
             background: #ffffff;
@@ -686,6 +691,148 @@
             padding: 0.5rem;
         }
 
+        /* Face Recognition Styles */
+        .face-recognition-container {
+            background: #f8f4ee;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .face-recognition-container video, .face-recognition-container canvas {
+            width: 100%;
+            max-width: 320px;
+            border-radius: 1rem;
+            border: 2px solid #e67e22;
+            background: #1a1a1a;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .face-recognition-container canvas {
+            display: none;
+        }
+
+        .face-recognition-container .camera-controls {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: center;
+            margin-top: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .face-recognition-container .status-text {
+            font-size: 0.85rem;
+            color: #5a3e2b;
+            margin: 0.5rem 0;
+            min-height: 1.5rem;
+            font-weight: 500;
+        }
+
+        .face-recognition-container .status-text.success {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .face-recognition-container .status-text.error {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        .face-recognition-container .status-text.loading {
+            color: #f39c12;
+            font-weight: 600;
+        }
+
+        .face-recognition-container .btn-face {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.2s;
+        }
+
+        .face-recognition-container .btn-face:hover:not(:disabled) {
+            transform: scale(1.02);
+        }
+
+        .face-recognition-container .btn-face.active {
+            background: #e74c3c;
+        }
+
+        .face-recognition-container .btn-face:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .face-recognition-container .btn-face.scanning {
+            background: #f39c12;
+            animation: pulse-btn 1s infinite;
+        }
+
+        .face-recognition-container .btn-face.success {
+            background: #27ae60;
+        }
+
+        @keyframes pulse-btn {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .customer-face-status {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-left: 0.5rem;
+        }
+
+        .customer-face-status.has-face {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .customer-face-status.no-face {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .face-detection-overlay {
+            position: relative;
+            display: inline-block;
+        }
+
+        .face-detection-overlay canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #e0cfbc;
+            border-radius: 2px;
+            margin: 8px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar .progress-fill {
+            height: 100%;
+            background: #e67e22;
+            width: 0%;
+            transition: width 0.3s;
+            border-radius: 2px;
+        }
+
         @media (max-width: 700px) {
             body { padding: 1rem; }
         }
@@ -781,13 +928,53 @@
 
 <!-- Add Customer Modal -->
 <div id="customerModal" class="password-modal">
-    <div class="password-box">
+    <div class="password-box" style="max-width: 420px;">
         <h3>Add Customer</h3>
         <input type="text" id="customerName" placeholder="Full Name" style="width:100%; margin:0.5rem 0; padding:0.5rem;">
         <input type="text" id="customerPhone" placeholder="Phone" style="width:100%; margin:0.5rem 0; padding:0.5rem;">
+        <div class="face-recognition-container">
+            <div style="font-weight:600; font-size:0.9rem; margin-bottom:0.5rem;">📸 Face Recognition Registration</div>
+            <div class="face-detection-overlay">
+                <video id="registrationVideo" autoplay muted playsinline></video>
+                <canvas id="registrationOverlay"></canvas>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="registrationProgress"></div>
+            </div>
+            <div id="registrationStatus" class="status-text">Click "Start Camera" to register your face</div>
+            <div class="camera-controls">
+                <button id="startRegistrationCamera" class="btn-face">📷 Start Camera</button>
+                <button id="captureFaceBtn" class="btn-face" disabled>📸 Capture Face</button>
+            </div>
+        </div>
         <div style="display:flex; gap:1rem; justify-content:center; margin-top:1rem;">
             <button id="closeCustomerModalBtn" class="btn-outline">Cancel</button>
             <button id="saveCustomerModalBtn" class="btn-primary">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- Face Verification Modal (for existing customers) -->
+<div id="faceVerificationModal" class="password-modal">
+    <div class="password-box" style="max-width: 420px;">
+        <h3>🔐 Face Verification</h3>
+        <p style="color:#b28b65; font-size:0.9rem; margin:0.5rem 0;">Look at the camera to verify your identity</p>
+        <div class="face-recognition-container" style="padding:0.5rem; margin:0.5rem 0;">
+            <div class="face-detection-overlay">
+                <video id="verificationVideo" autoplay muted playsinline></video>
+                <canvas id="verificationOverlay"></canvas>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="verificationProgress"></div>
+            </div>
+            <div id="verificationStatus" class="status-text">Starting camera...</div>
+            <div class="camera-controls">
+                <button id="startVerificationCamera" class="btn-face">📷 Start Camera</button>
+                <button id="verifyFaceBtn" class="btn-face" disabled>✅ Verify Face</button>
+            </div>
+        </div>
+        <div style="display:flex; gap:1rem; justify-content:center; margin-top:0.5rem;">
+            <button id="cancelVerificationBtn" class="btn-outline">Cancel</button>
         </div>
     </div>
 </div>
@@ -805,6 +992,7 @@
     let currentModalCart = [];
     let currentModalCustomerId = null;
     let currentPopupCustomerId = null;
+    let pendingVerificationCustomerId = null;
 
     const ADMIN_PASSWORD = "admin123";
     let activeProtectedView = null;
@@ -828,6 +1016,14 @@
     let firebaseDb = null;
     let syncInProgress = false;
 
+    // Face Recognition variables
+    let isCameraActive = false;
+    let currentStream = null;
+    let registrationFaceData = null;
+    let isFaceDetectionReady = false;
+    let faceDetectionInterval = null;
+    let lastDetectedFace = null;
+
     // Show notification
     function showNotification(message) {
         const notification = document.createElement('div');
@@ -850,7 +1046,6 @@
             db.lastResetDate = new Date().toISOString();
             saveDatabase();
             
-            // Clear tracking on reset
             clickedOrders.clear();
             orderHighlightStartTime.clear();
             
@@ -926,7 +1121,6 @@
             if (resetOccurred) {
                 refreshUIAfterReset();
             }
-            // Also check for expired highlights (5 minutes passed)
             const dashboardView = document.getElementById("dashboardView");
             if (dashboardView && dashboardView.classList.contains("active")) {
                 const now = Date.now();
@@ -964,31 +1158,23 @@
         }
     }
 
-    // Mark order as clicked - turns off highlight IMMEDIATELY
     function markOrderAsClicked(orderId) {
-        console.log("Order clicked:", orderId); // Debug log
         if (!clickedOrders.has(orderId)) {
             clickedOrders.add(orderId);
-            console.log("Order marked as clicked, highlight removed"); // Debug log
-            // Immediately re-render to update the UI
             if (document.getElementById("dashboardView").classList.contains("active")) {
                 renderDashboard();
             }
         }
     }
 
-    // Check if an order should be highlighted
     function shouldHighlightOrder(orderId, orderTimestamp) {
-        // If clicked before, never highlight again
         if (clickedOrders.has(orderId)) {
             return false;
         }
         
-        // Check if order was created in the last 5 minutes
         const now = Date.now();
         const isWithin5Minutes = (now - orderTimestamp) < 300000;
         
-        // Store the highlight start time if not already stored and should be highlighted
         if (isWithin5Minutes && !orderHighlightStartTime.has(orderId)) {
             orderHighlightStartTime.set(orderId, orderTimestamp);
         }
@@ -1099,8 +1285,8 @@
 
     function initDefaultData() {
         db.customers = [
-            { id: "c1", name: "bryxz", phone: "555-0142", createdAt: Date.now() },
-            { id: "c2", name: "Amelia Chen", phone: "555-0143", createdAt: Date.now() - 86400000 }
+            { id: "c1", name: "bryxz", phone: "555-0142", createdAt: Date.now(), faceDescriptor: null },
+            { id: "c2", name: "Amelia Chen", phone: "555-0143", createdAt: Date.now() - 86400000, faceDescriptor: null }
         ];
         db.menuItems = [
             { id: 1, name: "Truffle Risotto", price: 450, available: true, useTimeLimit: true, timeStart: "11:00", timeEnd: "21:00" },
@@ -1265,9 +1451,18 @@
         }
         db.customers.forEach(cust => {
             const orderCount = db.orders.filter(o => o.customerId === cust.id).length;
+            const hasFace = cust.faceDescriptor ? true : false;
             const div = document.createElement("div");
             div.className = "guest-item";
-            div.innerHTML = `<div><div class="guest-name">${escapeHtml(cust.name)}</div><div class="guest-phone">${escapeHtml(cust.phone)}</div></div><span class="order-count-badge">${orderCount}</span>`;
+            div.innerHTML = `
+                <div>
+                    <div class="guest-name">${escapeHtml(cust.name)} 
+                        <span class="customer-face-status ${hasFace ? 'has-face' : 'no-face'}">${hasFace ? '📸' : '❌'}</span>
+                    </div>
+                    <div class="guest-phone">${escapeHtml(cust.phone)}</div>
+                </div>
+                <span class="order-count-badge">${orderCount}</span>
+            `;
             div.onclick = () => openCustomerPopup(cust.id);
             container.appendChild(div);
         });
@@ -1278,6 +1473,7 @@
         const cust = getCustomerById(customerId);
         if (!cust) return;
         const custOrders = getOrdersByCustomer(customerId);
+        const hasFace = cust.faceDescriptor ? true : false;
         
         let ordersHtml = "";
         if (custOrders.length === 0) {
@@ -1294,10 +1490,14 @@
         if (popupBody) {
             popupBody.innerHTML = `
                 <div class="customer-info-popup">
-                    <h2>${escapeHtml(cust.name)}</h2>
+                    <h2>${escapeHtml(cust.name)} 
+                        <span class="customer-face-status ${hasFace ? 'has-face' : 'no-face'}">${hasFace ? '✅ Face Registered' : '❌ No Face'}</span>
+                    </h2>
                     <p>${escapeHtml(cust.phone)} · ${custOrders.length} order(s) today</p>
+                    ${!hasFace ? '<p style="color:#e67e22; font-size:0.8rem;">⚠️ No face registered. Face recognition not available.</p>' : ''}
                 </div>
-                <button id="popupNewOrderBtn" class="btn-primary" style="width:100%; margin-bottom:1rem;">+ New Order</button>
+                <button id="popupNewOrderBtn" class="btn-primary" style="width:100%; margin-bottom:0.5rem;">+ New Order</button>
+                ${hasFace ? `<button id="popupVerifyFaceBtn" class="btn-face" style="width:100%; margin-bottom:1rem;">🔐 Verify with Face</button>` : ''}
                 <div style="font-weight:600; margin-bottom:0.5rem;">Today's Orders</div>
                 <div id="popupOrdersContainer">${ordersHtml}</div>
                 <div style="margin-top:1rem; text-align:center;">
@@ -1311,6 +1511,13 @@
             closeCustomerPopup();
             openOrderModalForCustomer(customerId);
         };
+        
+        const verifyFaceBtn = document.getElementById("popupVerifyFaceBtn");
+        if (verifyFaceBtn) verifyFaceBtn.onclick = () => {
+            closeCustomerPopup();
+            openFaceVerification(customerId);
+        };
+        
         const deleteBtn = document.getElementById("popupDeleteCustomerBtn");
         if (deleteBtn) deleteBtn.onclick = () => {
             closeCustomerPopup();
@@ -1327,6 +1534,446 @@
         currentPopupCustomerId = null;
     }
 
+    // ========== IMPROVED FACE RECOGNITION FUNCTIONS ==========
+    
+    // Load face-api.js models
+    async function loadFaceAPIModels() {
+        try {
+            // Load the face-api.js library from CDN
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js';
+            document.head.appendChild(script);
+            
+            return new Promise((resolve, reject) => {
+                script.onload = async () => {
+                    try {
+                        // Use the global faceapi object
+                        const faceapi = window.faceapi;
+                        
+                        // Load models from CDN
+                        const MODEL_URL = 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights';
+                        
+                        await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
+                        await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
+                        await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+                        
+                        console.log('Face API models loaded successfully');
+                        isFaceDetectionReady = true;
+                        resolve(true);
+                    } catch (error) {
+                        console.error('Error loading face-api models:', error);
+                        reject(error);
+                    }
+                };
+                script.onerror = () => {
+                    reject(new Error('Failed to load face-api.js library'));
+                };
+            });
+        } catch (error) {
+            console.error('Face API load error:', error);
+            return false;
+        }
+    }
+
+    // Start camera with face detection
+    async function startCameraWithFaceDetection(videoElement, overlayCanvas, statusElement, buttonElement, progressElement) {
+        try {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+            }
+            
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: 'user',
+                    width: { ideal: 480 },
+                    height: { ideal: 360 }
+                }
+            });
+            
+            currentStream = stream;
+            videoElement.srcObject = stream;
+            await videoElement.play();
+            isCameraActive = true;
+            
+            if (statusElement) {
+                statusElement.textContent = '🔍 Camera ready. Looking for face...';
+                statusElement.className = 'status-text loading';
+            }
+            if (buttonElement) {
+                buttonElement.disabled = true;
+            }
+            
+            // Start face detection loop
+            if (overlayCanvas) {
+                startFaceDetectionLoop(videoElement, overlayCanvas, statusElement, buttonElement, progressElement);
+            }
+            
+            return true;
+        } catch (error) {
+            console.error('Camera error:', error);
+            if (statusElement) {
+                statusElement.textContent = '❌ Camera access denied. Please allow camera access.';
+                statusElement.className = 'status-text error';
+            }
+            return false;
+        }
+    }
+
+    // Face detection loop
+    function startFaceDetectionLoop(videoElement, overlayCanvas, statusElement, buttonElement, progressElement) {
+        if (faceDetectionInterval) {
+            clearInterval(faceDetectionInterval);
+        }
+        
+        const faceapi = window.faceapi;
+        if (!faceapi || !isFaceDetectionReady) {
+            if (statusElement) {
+                statusElement.textContent = '⏳ Loading face detection models...';
+                statusElement.className = 'status-text loading';
+            }
+            // Try to load models if not ready
+            loadFaceAPIModels().then(() => {
+                if (isFaceDetectionReady) {
+                    startFaceDetectionLoop(videoElement, overlayCanvas, statusElement, buttonElement, progressElement);
+                }
+            });
+            return;
+        }
+        
+        let detectionCount = 0;
+        const requiredDetections = 3;
+        let faceDetected = false;
+        
+        faceDetectionInterval = setInterval(async () => {
+            if (!isCameraActive || !videoElement || videoElement.paused) {
+                return;
+            }
+            
+            try {
+                const detection = await faceapi.detectSingleFace(videoElement)
+                    .withFaceLandmarks();
+                
+                // Draw on canvas
+                const ctx = overlayCanvas.getContext('2d');
+                if (overlayCanvas.width !== videoElement.videoWidth || overlayCanvas.height !== videoElement.videoHeight) {
+                    overlayCanvas.width = videoElement.videoWidth;
+                    overlayCanvas.height = videoElement.videoHeight;
+                }
+                ctx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+                
+                if (detection) {
+                    // Draw detection box
+                    const box = detection.detection.box;
+                    ctx.strokeStyle = '#27ae60';
+                    ctx.lineWidth = 3;
+                    ctx.strokeRect(box.x, box.y, box.width, box.height);
+                    
+                    // Draw landmarks
+                    if (detection.landmarks) {
+                        const landmarks = detection.landmarks.positions;
+                        ctx.fillStyle = '#e67e22';
+                        landmarks.forEach(point => {
+                            ctx.beginPath();
+                            ctx.arc(point.x, point.y, 2, 0, 2 * Math.PI);
+                            ctx.fill();
+                        });
+                    }
+                    
+                    // Draw face mesh
+                    if (detection.landmarks) {
+                        const jawOutline = detection.landmarks.getJawOutline();
+                        ctx.strokeStyle = 'rgba(230, 126, 34, 0.5)';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        jawOutline.forEach((point, i) => {
+                            if (i === 0) ctx.moveTo(point.x, point.y);
+                            else ctx.lineTo(point.x, point.y);
+                        });
+                        ctx.stroke();
+                    }
+                    
+                    // Progress
+                    detectionCount++;
+                    if (progressElement) {
+                        const progress = Math.min((detectionCount / requiredDetections) * 100, 100);
+                        progressElement.style.width = progress + '%';
+                    }
+                    
+                    if (detectionCount >= requiredDetections && !faceDetected) {
+                        faceDetected = true;
+                        lastDetectedFace = detection;
+                        if (statusElement) {
+                            statusElement.textContent = '✅ Face detected! Click "Capture Face" to register.';
+                            statusElement.className = 'status-text success';
+                        }
+                        if (buttonElement) {
+                            buttonElement.disabled = false;
+                            buttonElement.textContent = '📸 Capture Face';
+                        }
+                    }
+                } else {
+                    detectionCount = 0;
+                    if (progressElement) {
+                        progressElement.style.width = '0%';
+                    }
+                    if (statusElement && !faceDetected) {
+                        statusElement.textContent = '🔍 No face detected. Please look at the camera.';
+                        statusElement.className = 'status-text';
+                    }
+                }
+            } catch (error) {
+                console.error('Face detection error:', error);
+            }
+        }, 200);
+    }
+
+    // Stop camera
+    function stopCamera(videoElement, overlayCanvas) {
+        if (faceDetectionInterval) {
+            clearInterval(faceDetectionInterval);
+            faceDetectionInterval = null;
+        }
+        
+        if (currentStream) {
+            currentStream.getTracks().forEach(track => track.stop());
+            currentStream = null;
+        }
+        if (videoElement) {
+            videoElement.srcObject = null;
+        }
+        if (overlayCanvas) {
+            const ctx = overlayCanvas.getContext('2d');
+            ctx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+        }
+        isCameraActive = false;
+        lastDetectedFace = null;
+    }
+
+    // Capture face descriptor
+    async function captureFaceDescriptor(videoElement, overlayCanvas) {
+        if (!isCameraActive || !videoElement) {
+            return null;
+        }
+        
+        try {
+            const faceapi = window.faceapi;
+            if (!faceapi || !isFaceDetectionReady) {
+                return null;
+            }
+            
+            // Get full face descriptor
+            const fullDetection = await faceapi.detectSingleFace(videoElement)
+                .withFaceLandmarks()
+                .withFaceDescriptor();
+            
+            if (fullDetection) {
+                const descriptor = fullDetection.descriptor;
+                // Convert to string for storage
+                return JSON.stringify(Array.from(descriptor));
+            }
+            return null;
+        } catch (error) {
+            console.error('Capture error:', error);
+            return null;
+        }
+    }
+
+    // Compare two face descriptors
+    function compareFaceDescriptors(desc1, desc2) {
+        if (!desc1 || !desc2) return false;
+        
+        try {
+            const faceapi = window.faceapi;
+            if (!faceapi) return false;
+            
+            // Parse descriptors
+            const d1 = new Float32Array(JSON.parse(desc1));
+            const d2 = new Float32Array(JSON.parse(desc2));
+            
+            // Calculate Euclidean distance
+            const distance = faceapi.euclideanDistance(d1, d2);
+            
+            // Threshold for face matching (0.6 is a common threshold)
+            return distance < 0.6;
+        } catch (error) {
+            console.error('Comparison error:', error);
+            return false;
+        }
+    }
+
+    // Open face verification modal
+    function openFaceVerification(customerId) {
+        pendingVerificationCustomerId = customerId;
+        const modal = document.getElementById('faceVerificationModal');
+        if (modal) modal.classList.add('active');
+        
+        // Reset UI
+        const video = document.getElementById('verificationVideo');
+        const overlay = document.getElementById('verificationOverlay');
+        const status = document.getElementById('verificationStatus');
+        const startBtn = document.getElementById('startVerificationCamera');
+        const verifyBtn = document.getElementById('verifyFaceBtn');
+        const progress = document.getElementById('verificationProgress');
+        
+        stopCamera(video, overlay);
+        if (status) {
+            status.textContent = 'Click "Start Camera" to begin.';
+            status.className = 'status-text';
+        }
+        if (startBtn) {
+            startBtn.disabled = false;
+            startBtn.textContent = '📷 Start Camera';
+        }
+        if (verifyBtn) {
+            verifyBtn.disabled = true;
+            verifyBtn.textContent = '✅ Verify Face';
+            verifyBtn.className = 'btn-face';
+        }
+        if (progress) {
+            progress.style.width = '0%';
+        }
+    }
+
+    // Close face verification modal
+    function closeFaceVerification() {
+        const modal = document.getElementById('faceVerificationModal');
+        if (modal) modal.classList.remove('active');
+        stopCamera(
+            document.getElementById('verificationVideo'),
+            document.getElementById('verificationOverlay')
+        );
+        pendingVerificationCustomerId = null;
+    }
+
+    // Verify face for customer
+    async function verifyFace() {
+        const video = document.getElementById('verificationVideo');
+        const overlay = document.getElementById('verificationOverlay');
+        const status = document.getElementById('verificationStatus');
+        const verifyBtn = document.getElementById('verifyFaceBtn');
+        const progress = document.getElementById('verificationProgress');
+        
+        if (!isCameraActive || !video) {
+            if (status) {
+                status.textContent = '⚠️ Please start camera first.';
+                status.className = 'status-text error';
+            }
+            return;
+        }
+        
+        if (!pendingVerificationCustomerId) {
+            if (status) {
+                status.textContent = '❌ No customer selected.';
+                status.className = 'status-text error';
+            }
+            return;
+        }
+        
+        const customer = getCustomerById(pendingVerificationCustomerId);
+        if (!customer) {
+            if (status) {
+                status.textContent = '❌ Customer not found.';
+                status.className = 'status-text error';
+            }
+            return;
+        }
+        
+        if (!customer.faceDescriptor) {
+            if (status) {
+                status.textContent = '❌ Customer has no registered face.';
+                status.className = 'status-text error';
+            }
+            return;
+        }
+        
+        try {
+            const faceapi = window.faceapi;
+            if (!faceapi || !isFaceDetectionReady) {
+                if (status) {
+                    status.textContent = '⏳ Face detection models not ready. Please wait.';
+                    status.className = 'status-text loading';
+                }
+                return;
+            }
+            
+            verifyBtn.disabled = true;
+            verifyBtn.textContent = '⏳ Verifying...';
+            verifyBtn.className = 'btn-face scanning';
+            
+            if (progress) {
+                progress.style.width = '30%';
+            }
+            
+            const fullDetection = await faceapi.detectSingleFace(video)
+                .withFaceLandmarks()
+                .withFaceDescriptor();
+            
+            if (progress) {
+                progress.style.width = '70%';
+            }
+            
+            if (fullDetection) {
+                const descriptor = JSON.stringify(Array.from(fullDetection.descriptor));
+                const isMatch = compareFaceDescriptors(descriptor, customer.faceDescriptor);
+                
+                if (progress) {
+                    progress.style.width = '100%';
+                }
+                
+                if (isMatch) {
+                    if (status) {
+                        status.textContent = '✅ Face verified successfully! Opening customer profile...';
+                        status.className = 'status-text success';
+                    }
+                    verifyBtn.textContent = '✅ Verified!';
+                    verifyBtn.className = 'btn-face success';
+                    
+                    setTimeout(() => {
+                        closeFaceVerification();
+                        openCustomerPopup(pendingVerificationCustomerId);
+                    }, 1000);
+                } else {
+                    if (status) {
+                        status.textContent = '❌ Face does not match registered customer. Please try again.';
+                        status.className = 'status-text error';
+                    }
+                    if (progress) {
+                        progress.style.width = '0%';
+                    }
+                    verifyBtn.disabled = false;
+                    verifyBtn.textContent = '🔄 Try Again';
+                    verifyBtn.className = 'btn-face';
+                }
+            } else {
+                if (status) {
+                    status.textContent = '❌ No face detected. Please look at the camera.';
+                    status.className = 'status-text error';
+                }
+                if (progress) {
+                    progress.style.width = '0%';
+                }
+                verifyBtn.disabled = false;
+                verifyBtn.textContent = '✅ Verify Face';
+                verifyBtn.className = 'btn-face';
+            }
+        } catch (error) {
+            console.error('Verification error:', error);
+            if (status) {
+                status.textContent = '❌ Error during verification. Please try again.';
+                status.className = 'status-text error';
+            }
+            verifyBtn.disabled = false;
+            verifyBtn.textContent = '✅ Verify Face';
+            verifyBtn.className = 'btn-face';
+            if (progress) {
+                progress.style.width = '0%';
+            }
+        }
+    }
+
+    // ========== ORDER MODAL FUNCTIONS ==========
+    
     function openOrderModalForCustomer(customerId) {
         const cust = getCustomerById(customerId);
         if (!cust) return;
@@ -1427,7 +2074,6 @@
         };
         db.orders.push(newOrder);
         
-        // Store highlight start time for this new order
         orderHighlightStartTime.set(newOrder.id, newOrder.timestamp);
         
         saveDatabase();
@@ -1451,7 +2097,6 @@
         const container = document.getElementById("dashboardContent");
         if (!container) return;
         
-        // Check for expired highlights (5 minutes passed)
         const now = Date.now();
         let needsRefresh = false;
         for (let [orderId, startTime] of orderHighlightStartTime.entries()) {
@@ -1478,7 +2123,6 @@
         if (menuTotals.size === 0) menuSummaryHtml = `<tr><td colspan="3" style="text-align:center;">No orders today</td></td>`;
         else for (let [name, data] of menuTotals.entries()) menuSummaryHtml += `<tr><td>${escapeHtml(name)}</td><td>${data.quantity}</td><td>${CURRENCY}${data.revenue.toFixed(2)}</td></tr>`;
         
-        // Group orders by customer and get latest order timestamp for sorting
         const customersWithOrders = new Map();
         db.orders.forEach(order => {
             const cust = getCustomerById(order.customerId);
@@ -1498,7 +2142,6 @@
             }
         });
         
-        // Sort customers by latest order time (newest first)
         const sortedCustomers = Array.from(customersWithOrders.values()).sort((a, b) => b.latestOrderTime - a.latestOrderTime);
         
         let customerHistoryHtml = "";
@@ -1580,9 +2223,7 @@
         }
     }
 
-    // Global click handler for orders
     window.handleOrderClick = function(orderId) {
-        console.log("Click handler triggered for order:", orderId);
         markOrderAsClicked(orderId);
     };
 
@@ -1666,6 +2307,36 @@
         const phoneInput = document.getElementById("customerPhone");
         if (nameInput) nameInput.value = "";
         if (phoneInput) phoneInput.value = "";
+        
+        // Reset face registration UI
+        registrationFaceData = null;
+        const status = document.getElementById('registrationStatus');
+        if (status) {
+            status.textContent = 'Click "Start Camera" to register your face.';
+            status.className = 'status-text';
+        }
+        const captureBtn = document.getElementById('captureFaceBtn');
+        if (captureBtn) {
+            captureBtn.disabled = true;
+            captureBtn.textContent = '📸 Capture Face';
+            captureBtn.className = 'btn-face';
+        }
+        const startBtn = document.getElementById('startRegistrationCamera');
+        if (startBtn) {
+            startBtn.disabled = false;
+            startBtn.textContent = '📷 Start Camera';
+        }
+        const progress = document.getElementById('registrationProgress');
+        if (progress) {
+            progress.style.width = '0%';
+        }
+        
+        // Stop any existing camera
+        stopCamera(
+            document.getElementById('registrationVideo'),
+            document.getElementById('registrationOverlay')
+        );
+        
         const modal = document.getElementById("customerModal");
         if (modal) modal.classList.add("active");
     }
@@ -1676,12 +2347,29 @@
         const name = nameInput ? nameInput.value.trim() : "";
         const phone = phoneInput ? phoneInput.value.trim() : "";
         if (!name || !phone) { alert("Name and phone required"); return; }
-        db.customers.push({ id: "c" + Date.now() + "_" + Math.random().toString(36).substr(2, 6), name, phone, createdAt: Date.now() });
+        
+        const newCustomer = { 
+            id: "c" + Date.now() + "_" + Math.random().toString(36).substr(2, 6), 
+            name, 
+            phone, 
+            createdAt: Date.now(),
+            faceDescriptor: registrationFaceData || null
+        };
+        
+        db.customers.push(newCustomer);
         saveDatabase();
         renderGuests();
+        
         const modal = document.getElementById("customerModal");
         if (modal) modal.classList.remove("active");
-        alert(`Customer "${name}" added!`);
+        
+        // Stop camera
+        stopCamera(
+            document.getElementById('registrationVideo'),
+            document.getElementById('registrationOverlay')
+        );
+        
+        alert(`Customer "${name}" added!${registrationFaceData ? ' Face registered successfully.' : ' No face registered.'}`);
     }
 
     function requestDeletePassword(customerId) {
@@ -1798,6 +2486,10 @@
         if (closeCustomerModalBtn) closeCustomerModalBtn.onclick = () => {
             const modal = document.getElementById("customerModal");
             if (modal) modal.classList.remove("active");
+            stopCamera(
+                document.getElementById('registrationVideo'),
+                document.getElementById('registrationOverlay')
+            );
         };
         
         const saveCustomerBtn = document.getElementById("saveCustomerModalBtn");
@@ -1820,6 +2512,108 @@
         
         const customerPopup = document.getElementById("customerPopup");
         if (customerPopup) customerPopup.addEventListener("click", (e) => { if (e.target === customerPopup) closeCustomerPopup(); });
+        
+        // Face Recognition - Registration
+        const startRegBtn = document.getElementById('startRegistrationCamera');
+        if (startRegBtn) {
+            startRegBtn.onclick = async () => {
+                const video = document.getElementById('registrationVideo');
+                const overlay = document.getElementById('registrationOverlay');
+                const status = document.getElementById('registrationStatus');
+                const captureBtn = document.getElementById('captureFaceBtn');
+                const progress = document.getElementById('registrationProgress');
+                
+                // Load models first if not ready
+                if (!isFaceDetectionReady) {
+                    status.textContent = '⏳ Loading face detection models...';
+                    status.className = 'status-text loading';
+                    const loaded = await loadFaceAPIModels();
+                    if (!loaded) {
+                        status.textContent = '❌ Failed to load face detection. Please check your internet connection.';
+                        status.className = 'status-text error';
+                        return;
+                    }
+                }
+                
+                const success = await startCameraWithFaceDetection(video, overlay, status, captureBtn, progress);
+                if (success) {
+                    startRegBtn.textContent = '📷 Restart Camera';
+                }
+            };
+        }
+        
+        const captureBtn = document.getElementById('captureFaceBtn');
+        if (captureBtn) {
+            captureBtn.onclick = async () => {
+                const video = document.getElementById('registrationVideo');
+                const status = document.getElementById('registrationStatus');
+                const progress = document.getElementById('registrationProgress');
+                
+                const descriptor = await captureFaceDescriptor(video);
+                if (descriptor) {
+                    registrationFaceData = descriptor;
+                    status.textContent = '✅ Face captured successfully!';
+                    status.className = 'status-text success';
+                    captureBtn.textContent = '✅ Captured!';
+                    captureBtn.className = 'btn-face success';
+                    if (progress) {
+                        progress.style.width = '100%';
+                    }
+                } else {
+                    registrationFaceData = null;
+                    status.textContent = '❌ Failed to capture face. Please try again.';
+                    status.className = 'status-text error';
+                    captureBtn.textContent = '📸 Capture Face';
+                    captureBtn.className = 'btn-face';
+                }
+            };
+        }
+        
+        // Face Recognition - Verification
+        const startVerBtn = document.getElementById('startVerificationCamera');
+        if (startVerBtn) {
+            startVerBtn.onclick = async () => {
+                const video = document.getElementById('verificationVideo');
+                const overlay = document.getElementById('verificationOverlay');
+                const status = document.getElementById('verificationStatus');
+                const verifyBtn = document.getElementById('verifyFaceBtn');
+                const progress = document.getElementById('verificationProgress');
+                
+                if (!isFaceDetectionReady) {
+                    status.textContent = '⏳ Loading face detection models...';
+                    status.className = 'status-text loading';
+                    const loaded = await loadFaceAPIModels();
+                    if (!loaded) {
+                        status.textContent = '❌ Failed to load face detection. Please check your internet connection.';
+                        status.className = 'status-text error';
+                        return;
+                    }
+                }
+                
+                const success = await startCameraWithFaceDetection(video, overlay, status, verifyBtn, progress);
+                if (success) {
+                    startVerBtn.textContent = '📷 Restart Camera';
+                }
+            };
+        }
+        
+        const verifyBtn = document.getElementById('verifyFaceBtn');
+        if (verifyBtn) {
+            verifyBtn.onclick = verifyFace;
+        }
+        
+        const cancelVerBtn = document.getElementById('cancelVerificationBtn');
+        if (cancelVerBtn) {
+            cancelVerBtn.onclick = closeFaceVerification;
+        }
+        
+        // Close face verification on backdrop click
+        const verModal = document.getElementById('faceVerificationModal');
+        if (verModal) {
+            verModal.addEventListener('click', (e) => {
+                if (e.target === verModal) closeFaceVerification();
+            });
+        }
     }
 
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ return m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'; }); }
@@ -1833,6 +2627,9 @@
         setupVisibilityCheck();
         setupPeriodicCheck();
         await initFirebase();
+        
+        // Pre-load face detection models
+        await loadFaceAPIModels();
         
         if (document.getElementById("dashboardView").classList.contains("active")) {
             startDashboardAutoRefresh();
