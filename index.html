@@ -91,8 +91,10 @@
             border-radius: 2rem;
             padding: 2rem;
             width: 90%;
-            max-width: 380px;
+            max-width: 420px;
             text-align: center;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .password-box input {
@@ -306,7 +308,7 @@
             background: #ffffff;
             border-right: 1px solid #ede6db;
             padding: 1.5rem 0;
-             width: 300px;
+            width: 300px;
         }
 
         .guests-list {
@@ -700,7 +702,7 @@
             text-align: center;
         }
 
-        .face-recognition-container video, .face-recognition-container canvas {
+        .face-recognition-container video {
             width: 100%;
             max-width: 320px;
             border-radius: 1rem;
@@ -708,10 +710,6 @@
             background: #1a1a1a;
             display: block;
             margin: 0 auto;
-        }
-
-        .face-recognition-container canvas {
-            display: none;
         }
 
         .face-recognition-container .camera-controls {
@@ -760,28 +758,17 @@
             transform: scale(1.02);
         }
 
-        .face-recognition-container .btn-face.active {
-            background: #e74c3c;
-        }
-
         .face-recognition-container .btn-face:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-        }
-
-        .face-recognition-container .btn-face.scanning {
-            background: #f39c12;
-            animation: pulse-btn 1s infinite;
         }
 
         .face-recognition-container .btn-face.success {
             background: #27ae60;
         }
 
-        @keyframes pulse-btn {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        .face-recognition-container .btn-face.error {
+            background: #e74c3c;
         }
 
         .customer-face-status {
@@ -833,7 +820,7 @@
             border-radius: 2px;
         }
 
-        .fallback-notice {
+        .browser-warning {
             background: #fff3cd;
             border: 1px solid #ffc107;
             border-radius: 0.5rem;
@@ -845,6 +832,7 @@
 
         @media (max-width: 700px) {
             body { padding: 1rem; }
+            .guests-sidebar { width: 100%; }
         }
     </style>
 </head>
@@ -944,8 +932,8 @@
         <input type="text" id="customerPhone" placeholder="Phone" style="width:100%; margin:0.5rem 0; padding:0.5rem;">
         <div class="face-recognition-container">
             <div style="font-weight:600; font-size:0.9rem; margin-bottom:0.5rem;">📸 Face Recognition Registration</div>
-            <div id="fallbackNotice" class="fallback-notice" style="display:none;">
-                ⚠️ Advanced face detection not available. Using basic detection.
+            <div id="browserWarning" class="browser-warning" style="display:none;">
+                ⚠️ Your browser doesn't support face detection. Please use Chrome or Edge.
             </div>
             <div class="face-detection-overlay">
                 <video id="registrationVideo" autoplay muted playsinline></video>
@@ -973,9 +961,6 @@
         <h3>🔐 Face Verification</h3>
         <p style="color:#b28b65; font-size:0.9rem; margin:0.5rem 0;">Look at the camera to verify your identity</p>
         <div class="face-recognition-container" style="padding:0.5rem; margin:0.5rem 0;">
-            <div id="verificationFallbackNotice" class="fallback-notice" style="display:none;">
-                ⚠️ Advanced face detection not available. Using basic detection.
-            </div>
             <div class="face-detection-overlay">
                 <video id="verificationVideo" autoplay muted playsinline></video>
                 <canvas id="verificationOverlay"></canvas>
@@ -1036,11 +1021,9 @@
     let isCameraActive = false;
     let currentStream = null;
     let registrationFaceData = null;
-    let isFaceDetectionReady = false;
     let faceDetectionInterval = null;
     let lastDetectedFace = null;
-    let useFallbackMode = false;
-    let faceapiLoaded = false;
+    let isFaceDetectionSupported = false;
 
     // Show notification
     function showNotification(message) {
@@ -1552,87 +1535,24 @@
         currentPopupCustomerId = null;
     }
 
-    // ========== IMPROVED FACE RECOGNITION FUNCTIONS ==========
+    // ========== FACE RECOGNITION FUNCTIONS ==========
     
-    // Load face-api.js models with error handling
-    async function loadFaceAPIModels() {
-        // Check if already loaded
-        if (faceapiLoaded) {
+    // Check if FaceDetector is supported
+    function checkFaceDetectionSupport() {
+        if ('FaceDetector' in window) {
+            isFaceDetectionSupported = true;
             return true;
-        }
-        
-        // Check if faceapi is already available (loaded by another script)
-        if (typeof window.faceapi !== 'undefined' && window.faceapi.nets) {
-            try {
-                // Check if models are already loaded
-                const isLoaded = await window.faceapi.nets.ssdMobilenetv1.isLoaded();
-                if (isLoaded) {
-                    console.log('Face API models already loaded');
-                    faceapiLoaded = true;
-                    isFaceDetectionReady = true;
-                    return true;
-                }
-            } catch(e) {}
-        }
-        
-        try {
-            // Load the face-api.js library from CDN if not already loaded
-            if (typeof window.faceapi === 'undefined') {
-                console.log('Loading face-api.js library...');
-                await new Promise((resolve, reject) => {
-                    const script = document.createElement('script');
-                    script.src = 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js';
-                    script.onload = resolve;
-                    script.onerror = reject;
-                    document.head.appendChild(script);
-                });
-                console.log('face-api.js library loaded');
-            }
-            
-            // Wait a bit for the library to initialize
-            await new Promise(resolve => setTimeout(resolve, 500));
-            
-            // Check if faceapi is available
-            if (typeof window.faceapi === 'undefined') {
-                throw new Error('face-api.js not available');
-            }
-            
-            const faceapi = window.faceapi;
-            
-            // Load models from CDN
-            const MODEL_URL = 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights';
-            
-            console.log('Loading face detection models...');
-            
-            await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
-            await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
-            await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
-            
-            console.log('Face API models loaded successfully');
-            faceapiLoaded = true;
-            isFaceDetectionReady = true;
-            useFallbackMode = false;
-            return true;
-        } catch (error) {
-            console.warn('Face API load error:', error);
-            // Use fallback mode
-            useFallbackMode = true;
-            isFaceDetectionReady = false;
-            faceapiLoaded = false;
-            
-            // Show fallback notice
-            const notice = document.getElementById('fallbackNotice');
-            if (notice) notice.style.display = 'block';
-            const verNotice = document.getElementById('verificationFallbackNotice');
-            if (verNotice) verNotice.style.display = 'block';
-            
+        } else {
+            isFaceDetectionSupported = false;
+            const warning = document.getElementById('browserWarning');
+            if (warning) warning.style.display = 'block';
             return false;
         }
     }
 
-    // Fallback face detection using the built-in FaceDetector API
-    async function detectFaceFallback(videoElement) {
-        if (!('FaceDetector' in window)) {
+    // Detect face using browser's FaceDetector API
+    async function detectFace(videoElement) {
+        if (!isFaceDetectionSupported) {
             return null;
         }
         
@@ -1648,15 +1568,17 @@
             }
             return null;
         } catch (error) {
+            console.error('Face detection error:', error);
             return null;
         }
     }
 
-    // Generate a simple face descriptor for fallback
-    function generateFallbackDescriptor(face) {
+    // Generate a face descriptor from the face detection result
+    function generateFaceDescriptor(face) {
         if (!face) return null;
         const bbox = face.boundingBox;
-        // Create a simple descriptor based on face position and size
+        // Use bounding box position and size as a simple descriptor
+        // This is a simple approach - in a real app you'd use more sophisticated methods
         const descriptor = [
             Math.round(bbox.x || 0),
             Math.round(bbox.y || 0),
@@ -1666,8 +1588,8 @@
         return btoa(descriptor.join(','));
     }
 
-    // Compare fallback descriptors
-    function compareFallbackDescriptors(desc1, desc2) {
+    // Compare two face descriptors
+    function compareFaceDescriptors(desc1, desc2) {
         if (!desc1 || !desc2) return false;
         return desc1 === desc2;
     }
@@ -1694,7 +1616,7 @@
             isCameraActive = true;
             
             if (statusElement) {
-                statusElement.textContent = useFallbackMode ? '🔍 Camera ready (basic mode). Looking for face...' : '🔍 Camera ready. Looking for face...';
+                statusElement.textContent = '🔍 Camera ready. Looking for face...';
                 statusElement.className = 'status-text loading';
             }
             if (buttonElement) {
@@ -1733,17 +1655,7 @@
             }
             
             try {
-                let detection = null;
-                
-                // Use face-api.js if available, otherwise fallback
-                if (!useFallbackMode && typeof window.faceapi !== 'undefined' && isFaceDetectionReady) {
-                    const faceapi = window.faceapi;
-                    detection = await faceapi.detectSingleFace(videoElement)
-                        .withFaceLandmarks();
-                } else {
-                    // Fallback to built-in FaceDetector
-                    detection = await detectFaceFallback(videoElement);
-                }
+                const detection = await detectFace(videoElement);
                 
                 // Draw on canvas
                 const ctx = overlayCanvas.getContext('2d');
@@ -1755,31 +1667,19 @@
                 
                 if (detection) {
                     // Draw detection box
-                    const box = detection.detection ? detection.detection.box : detection.boundingBox;
-                    if (box) {
-                        ctx.strokeStyle = '#27ae60';
-                        ctx.lineWidth = 3;
-                        ctx.strokeRect(box.x, box.y, box.width, box.height);
-                        
-                        // Draw a simple face indicator
-                        ctx.fillStyle = 'rgba(39, 174, 96, 0.2)';
-                        ctx.fillRect(box.x, box.y, box.width, box.height);
-                    }
+                    const box = detection.boundingBox;
+                    ctx.strokeStyle = '#27ae60';
+                    ctx.lineWidth = 3;
+                    ctx.strokeRect(box.x, box.y, box.width, box.height);
                     
-                    // If we have landmarks, draw them
-                    if (detection.landmarks) {
-                        const landmarks = detection.landmarks.positions || detection.landmarks;
-                        ctx.fillStyle = '#e67e22';
-                        if (Array.isArray(landmarks)) {
-                            landmarks.forEach(point => {
-                                if (point.x && point.y) {
-                                    ctx.beginPath();
-                                    ctx.arc(point.x, point.y, 2, 0, 2 * Math.PI);
-                                    ctx.fill();
-                                }
-                            });
-                        }
-                    }
+                    // Draw a subtle fill
+                    ctx.fillStyle = 'rgba(39, 174, 96, 0.1)';
+                    ctx.fillRect(box.x, box.y, box.width, box.height);
+                    
+                    // Draw "FACE DETECTED" label
+                    ctx.fillStyle = '#27ae60';
+                    ctx.font = '12px system-ui';
+                    ctx.fillText('👤 Face Detected', box.x, box.y - 8);
                     
                     // Progress
                     detectionCount++;
@@ -1845,58 +1745,23 @@
         }
         
         try {
-            // Try using face-api.js first
-            if (!useFallbackMode && typeof window.faceapi !== 'undefined' && isFaceDetectionReady) {
-                const faceapi = window.faceapi;
-                const fullDetection = await faceapi.detectSingleFace(videoElement)
-                    .withFaceLandmarks()
-                    .withFaceDescriptor();
-                
-                if (fullDetection) {
-                    const descriptor = fullDetection.descriptor;
-                    return JSON.stringify(Array.from(descriptor));
-                }
+            // Use the last detected face
+            if (lastDetectedFace) {
+                const descriptor = generateFaceDescriptor(lastDetectedFace);
+                return descriptor;
             }
             
-            // Fallback: use the last detected face
-            if (lastDetectedFace) {
-                const descriptor = generateFallbackDescriptor(lastDetectedFace);
-                if (descriptor) {
-                    // Store as fallback descriptor with a prefix
-                    return 'fallback_' + descriptor;
-                }
+            // Try one more detection
+            const face = await detectFace(videoElement);
+            if (face) {
+                const descriptor = generateFaceDescriptor(face);
+                return descriptor;
             }
             
             return null;
         } catch (error) {
             console.error('Capture error:', error);
             return null;
-        }
-    }
-
-    // Compare two face descriptors
-    function compareFaceDescriptors(desc1, desc2) {
-        if (!desc1 || !desc2) return false;
-        
-        try {
-            // Check if using fallback descriptors
-            if (desc1.startsWith('fallback_') && desc2.startsWith('fallback_')) {
-                return compareFallbackDescriptors(desc1, desc2);
-            }
-            
-            // Use face-api.js for comparison
-            if (typeof window.faceapi !== 'undefined' && !desc1.startsWith('fallback_') && !desc2.startsWith('fallback_')) {
-                const faceapi = window.faceapi;
-                const d1 = new Float32Array(JSON.parse(desc1));
-                const d2 = new Float32Array(JSON.parse(desc2));
-                const distance = faceapi.euclideanDistance(d1, d2);
-                return distance < 0.6;
-            }
-            
-            return false;
-        } catch (error) {
-            console.error('Comparison error:', error);
-            return false;
         }
     }
 
@@ -1916,7 +1781,7 @@
         
         stopCamera(video, overlay);
         if (status) {
-            status.textContent = useFallbackMode ? 'Click "Start Camera" (basic mode)' : 'Click "Start Camera" to begin.';
+            status.textContent = 'Click "Start Camera" to begin.';
             status.className = 'status-text';
         }
         if (startBtn) {
@@ -1994,31 +1859,14 @@
                 progress.style.width = '30%';
             }
             
-            let descriptor = null;
-            
-            // Try using face-api.js first
-            if (!useFallbackMode && typeof window.faceapi !== 'undefined' && isFaceDetectionReady) {
-                const faceapi = window.faceapi;
-                const fullDetection = await faceapi.detectSingleFace(video)
-                    .withFaceLandmarks()
-                    .withFaceDescriptor();
-                
-                if (fullDetection) {
-                    descriptor = JSON.stringify(Array.from(fullDetection.descriptor));
-                }
-            } else {
-                // Fallback: use built-in detector
-                const face = await detectFaceFallback(video);
-                if (face) {
-                    descriptor = 'fallback_' + generateFallbackDescriptor(face);
-                }
-            }
+            const face = await detectFace(video);
             
             if (progress) {
                 progress.style.width = '70%';
             }
             
-            if (descriptor) {
+            if (face) {
+                const descriptor = generateFaceDescriptor(face);
                 const isMatch = compareFaceDescriptors(descriptor, customer.faceDescriptor);
                 
                 if (progress) {
@@ -2412,12 +2260,15 @@
         if (nameInput) nameInput.value = "";
         if (phoneInput) phoneInput.value = "";
         
+        // Check browser support
+        checkFaceDetectionSupport();
+        
         // Reset face registration UI
         registrationFaceData = null;
         const status = document.getElementById('registrationStatus');
         if (status) {
-            status.textContent = 'Click "Start Camera" to register your face.';
-            status.className = 'status-text';
+            status.textContent = isFaceDetectionSupported ? 'Click "Start Camera" to register your face.' : '⚠️ Face detection not supported in this browser.';
+            status.className = isFaceDetectionSupported ? 'status-text' : 'status-text error';
         }
         const captureBtn = document.getElementById('captureFaceBtn');
         if (captureBtn) {
@@ -2427,7 +2278,7 @@
         }
         const startBtn = document.getElementById('startRegistrationCamera');
         if (startBtn) {
-            startBtn.disabled = false;
+            startBtn.disabled = !isFaceDetectionSupported;
             startBtn.textContent = '📷 Start Camera';
         }
         const progress = document.getElementById('registrationProgress');
@@ -2627,16 +2478,10 @@
                 const captureBtn = document.getElementById('captureFaceBtn');
                 const progress = document.getElementById('registrationProgress');
                 
-                // Load models first if not ready
-                if (!isFaceDetectionReady && !useFallbackMode) {
-                    status.textContent = '⏳ Loading face detection models...';
-                    status.className = 'status-text loading';
-                    const loaded = await loadFaceAPIModels();
-                    if (!loaded) {
-                        status.textContent = '⚠️ Using basic face detection mode.';
-                        status.className = 'status-text';
-                        // Continue with fallback mode
-                    }
+                if (!isFaceDetectionSupported) {
+                    status.textContent = '❌ Face detection not supported in this browser. Please use Chrome or Edge.';
+                    status.className = 'status-text error';
+                    return;
                 }
                 
                 const success = await startCameraWithFaceDetection(video, overlay, status, captureBtn, progress);
@@ -2683,14 +2528,10 @@
                 const verifyBtn = document.getElementById('verifyFaceBtn');
                 const progress = document.getElementById('verificationProgress');
                 
-                if (!isFaceDetectionReady && !useFallbackMode) {
-                    status.textContent = '⏳ Loading face detection models...';
-                    status.className = 'status-text loading';
-                    const loaded = await loadFaceAPIModels();
-                    if (!loaded) {
-                        status.textContent = '⚠️ Using basic face detection mode.';
-                        status.className = 'status-text';
-                    }
+                if (!isFaceDetectionSupported) {
+                    status.textContent = '❌ Face detection not supported in this browser. Please use Chrome or Edge.';
+                    status.className = 'status-text error';
+                    return;
                 }
                 
                 const success = await startCameraWithFaceDetection(video, overlay, status, verifyBtn, progress);
@@ -2731,14 +2572,8 @@
         setupPeriodicCheck();
         await initFirebase();
         
-        // Try to load face detection models in the background
-        loadFaceAPIModels().then(success => {
-            if (success) {
-                console.log('Face detection models loaded successfully');
-            } else {
-                console.log('Using fallback face detection mode');
-            }
-        });
+        // Check if face detection is supported
+        checkFaceDetectionSupport();
         
         if (document.getElementById("dashboardView").classList.contains("active")) {
             startDashboardAutoRefresh();
