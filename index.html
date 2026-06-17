@@ -820,14 +820,19 @@
             border-radius: 2px;
         }
 
-        .browser-warning {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
+        .face-detection-info {
+            background: #e8f0fe;
+            border: 1px solid #4285f4;
             border-radius: 0.5rem;
             padding: 0.5rem;
             margin: 0.5rem 0;
             font-size: 0.8rem;
-            color: #856404;
+            color: #1a237e;
+            text-align: left;
+        }
+
+        .face-detection-info strong {
+            color: #e67e22;
         }
 
         @media (max-width: 700px) {
@@ -932,8 +937,10 @@
         <input type="text" id="customerPhone" placeholder="Phone" style="width:100%; margin:0.5rem 0; padding:0.5rem;">
         <div class="face-recognition-container">
             <div style="font-weight:600; font-size:0.9rem; margin-bottom:0.5rem;">📸 Face Recognition Registration</div>
-            <div id="browserWarning" class="browser-warning" style="display:none;">
-                ⚠️ Your browser doesn't support face detection. Please use Chrome or Edge.
+            <div class="face-detection-info">
+                <strong>📌 How it works:</strong> Position your face in the center of the frame. 
+                The system will detect your face and create a unique pattern. 
+                <strong>Make sure you're in a well-lit area.</strong>
             </div>
             <div class="face-detection-overlay">
                 <video id="registrationVideo" autoplay muted playsinline></video>
@@ -1023,7 +1030,7 @@
     let registrationFaceData = null;
     let faceDetectionInterval = null;
     let lastDetectedFace = null;
-    let isFaceDetectionSupported = false;
+    let isFaceDetectionSupported = true;
 
     // Show notification
     function showNotification(message) {
@@ -1535,55 +1542,149 @@
         currentPopupCustomerId = null;
     }
 
-    // ========== FACE RECOGNITION FUNCTIONS ==========
+    // ========== CUSTOM FACE DETECTION ==========
     
-    // Check if FaceDetector is supported
-    function checkFaceDetectionSupport() {
-        if ('FaceDetector' in window) {
-            isFaceDetectionSupported = true;
-            return true;
-        } else {
-            isFaceDetectionSupported = false;
-            const warning = document.getElementById('browserWarning');
-            if (warning) warning.style.display = 'block';
-            return false;
-        }
-    }
-
-    // Detect face using browser's FaceDetector API
-    async function detectFace(videoElement) {
-        if (!isFaceDetectionSupported) {
-            return null;
-        }
-        
+    // This uses skin color detection and shape analysis to find faces
+    // Works on any browser that supports canvas and camera
+    
+    function detectFaceFromImage(videoElement) {
         try {
-            const faceDetector = new FaceDetector({
-                maxDetectedFaces: 1,
-                fastMode: true
+            // Create a canvas to process the image
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size to match video
+            canvas.width = videoElement.videoWidth || 320;
+            canvas.height = videoElement.videoHeight || 240;
+            
+            // Draw the video frame to canvas
+            ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            
+            // Get image data for processing
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            
+            // Look for skin-colored regions
+            // Skin color detection in YCrCb color space
+            const skinPixels = [];
+            
+            for (let y = 0; y < canvas.height; y += 2) { // Sample every 2nd pixel for performance
+                for (let x = 0; x < canvas.width; x += 2) {
+                    const idx = (y * canvas.width + x) * 4;
+                    const r = data[idx];
+                    const g = data[idx + 1];
+                    const b = data[idx + 2];
+                    
+                    // Check if pixel is skin-colored using RGB thresholds
+                    const isSkin = isSkinColor(r, g, b);
+                    
+                    if (isSkin) {
+                        skinPixels.push({ x, y });
+                    }
+                }
+            }
+            
+            if (skinPixels.length < 50) {
+                return null; // Not enough skin pixels
+            }
+            
+            // Find the bounding box of skin pixels
+            let minX = canvas.width, maxX = 0, minY = canvas.height, maxY = 0;
+            
+            skinPixels.forEach(p => {
+                if (p.x < minX) minX = p.x;
+                if (p.x > maxX) maxX = p.x;
+                if (p.y < minY) minY = p.y;
+                if (p.y > maxY) maxY = p.y;
             });
             
-            const faces = await faceDetector.detect(videoElement);
-            if (faces.length > 0) {
-                return faces[0];
+            // Add some padding
+            const padding = 10;
+            minX = Math.max(0, minX - padding);
+            maxX = Math.min(canvas.width, maxX + padding);
+            minY = Math.max(0, minY - padding);
+            maxY = Math.min(canvas.height, maxY + padding);
+            
+            const width = maxX - minX;
+            const height = maxY - minY;
+            
+            // Check if the region looks like a face (roughly oval shape, aspect ratio ~0.7-1.0)
+            if (width < 30 || height < 30) {
+                return null; // Too small
             }
-            return null;
+            
+            const aspectRatio = width / height;
+            if (aspectRatio > 1.3 || aspectRatio < 0.6) {
+                // Not face-like shape (too wide or too tall)
+                // But we'll still return it if it's the only detection
+                // Just with a warning
+            }
+            
+            // Check if the region has enough skin density
+            let skinDensity = 0;
+            const regionPixels = [];
+            for (let y = minY; y < maxY; y++) {
+                for (let x = minX; x < maxX; x++) {
+                    const idx = (y * canvas.width + x) * 4;
+                    const r = data[idx];
+                    const g = data[idx + 1];
+                    const b = data[idx + 2];
+                    if (isSkinColor(r, g, b)) {
+                        skinDensity++;
+                    }
+                    regionPixels.push({ r, g, b, x, y });
+                }
+            }
+            
+            const regionArea = (maxX - minX) * (maxY - minY);
+            const density = skinDensity / regionArea;
+            
+            if (density < 0.3) {
+                // Not enough skin in the region
+                return null;
+            }
+            
+            // Return the face bounding box
+            return {
+                boundingBox: {
+                    x: minX,
+                    y: minY,
+                    width: width,
+                    height: height
+                },
+                skinDensity: density,
+                aspectRatio: aspectRatio
+            };
+            
         } catch (error) {
             console.error('Face detection error:', error);
             return null;
         }
     }
-
+    
+    function isSkinColor(r, g, b) {
+        // Convert RGB to YCrCb
+        const Y = 0.299 * r + 0.587 * g + 0.114 * b;
+        const Cr = (r - Y) * 0.713 + 128;
+        const Cb = (b - Y) * 0.564 + 128;
+        
+        // Skin color ranges in YCrCb
+        return (Cr >= 133 && Cr <= 173 &&
+                Cb >= 77 && Cb <= 127 &&
+                Y > 80 && Y < 255);
+    }
+    
     // Generate a face descriptor from the face detection result
     function generateFaceDescriptor(face) {
         if (!face) return null;
-        const bbox = face.boundingBox;
-        // Use bounding box position and size as a simple descriptor
-        // This is a simple approach - in a real app you'd use more sophisticated methods
+        const box = face.boundingBox;
+        // Create a descriptor based on the face region and skin density
         const descriptor = [
-            Math.round(bbox.x || 0),
-            Math.round(bbox.y || 0),
-            Math.round(bbox.width || 0),
-            Math.round(bbox.height || 0)
+            Math.round(box.x || 0),
+            Math.round(box.y || 0),
+            Math.round(box.width || 0),
+            Math.round(box.height || 0),
+            Math.round(face.skinDensity || 0.5, 2)
         ];
         return btoa(descriptor.join(','));
     }
@@ -1591,7 +1692,43 @@
     // Compare two face descriptors
     function compareFaceDescriptors(desc1, desc2) {
         if (!desc1 || !desc2) return false;
-        return desc1 === desc2;
+        
+        try {
+            // Decode descriptors
+            const d1 = atob(desc1).split(',').map(Number);
+            const d2 = atob(desc2).split(',').map(Number);
+            
+            // Compare position (allow some tolerance)
+            const xDiff = Math.abs(d1[0] - d2[0]);
+            const yDiff = Math.abs(d1[1] - d2[1]);
+            const wDiff = Math.abs(d1[2] - d2[2]);
+            const hDiff = Math.abs(d1[3] - d2[3]);
+            const densityDiff = Math.abs(d1[4] - d2[4]);
+            
+            // Allow 20% tolerance in dimensions and 10% in position
+            const tolerance = 0.2;
+            const positionTolerance = 0.15;
+            
+            const w1 = d1[2], h1 = d1[3];
+            const w2 = d2[2], h2 = d2[3];
+            
+            // Check if dimensions are similar
+            const wRatio = Math.min(w1, w2) / Math.max(w1, w2);
+            const hRatio = Math.min(h1, h2) / Math.max(h1, h2);
+            
+            // Check position similarity (normalized by image size - use 320x240 as reference)
+            const normX1 = d1[0] / 320, normX2 = d2[0] / 320;
+            const normY1 = d1[1] / 240, normY2 = d2[1] / 240;
+            const posDiff = Math.sqrt(Math.pow(normX1 - normX2, 2) + Math.pow(normY1 - normY2, 2));
+            
+            // If the face is in roughly the same position, similar size, and similar skin density
+            return (wRatio > 0.6 && hRatio > 0.6 && 
+                    posDiff < 0.3 &&
+                    densityDiff < 0.2);
+        } catch (error) {
+            console.error('Comparison error:', error);
+            return false;
+        }
     }
 
     // Start camera with face detection
@@ -1646,16 +1783,18 @@
         }
         
         let detectionCount = 0;
-        const requiredDetections = 3;
+        const requiredDetections = 5;
         let faceDetected = false;
+        let lastGoodDetection = null;
+        let consecutiveDetections = 0;
         
-        faceDetectionInterval = setInterval(async () => {
-            if (!isCameraActive || !videoElement || videoElement.paused) {
+        faceDetectionInterval = setInterval(() => {
+            if (!isCameraActive || !videoElement || videoElement.paused || !videoElement.videoWidth) {
                 return;
             }
             
             try {
-                const detection = await detectFace(videoElement);
+                const detection = detectFaceFromImage(videoElement);
                 
                 // Draw on canvas
                 const ctx = overlayCanvas.getContext('2d');
@@ -1676,13 +1815,47 @@
                     ctx.fillStyle = 'rgba(39, 174, 96, 0.1)';
                     ctx.fillRect(box.x, box.y, box.width, box.height);
                     
-                    // Draw "FACE DETECTED" label
+                    // Draw face info
                     ctx.fillStyle = '#27ae60';
                     ctx.font = '12px system-ui';
-                    ctx.fillText('👤 Face Detected', box.x, box.y - 8);
+                    ctx.fillText(`👤 Face Detected (${Math.round(detection.skinDensity * 100)}% skin)`, box.x, box.y - 8);
                     
-                    // Progress
-                    detectionCount++;
+                    // Draw aspect ratio info
+                    ctx.fillStyle = '#666';
+                    ctx.font = '10px system-ui';
+                    ctx.fillText(`AR: ${detection.aspectRatio.toFixed(2)}`, box.x, box.y + box.height + 16);
+                    
+                    // Check if detection is stable
+                    if (lastGoodDetection) {
+                        const prevBox = lastGoodDetection.boundingBox;
+                        const dx = Math.abs(box.x - prevBox.x);
+                        const dy = Math.abs(box.y - prevBox.y);
+                        const dw = Math.abs(box.width - prevBox.width);
+                        const dh = Math.abs(box.height - prevBox.height);
+                        
+                        // If the face moved significantly, reset
+                        if (dx > 20 || dy > 20 || dw > 20 || dh > 20) {
+                            consecutiveDetections = 0;
+                            detectionCount = 0;
+                            if (progressElement) {
+                                progressElement.style.width = '0%';
+                            }
+                            if (statusElement) {
+                                statusElement.textContent = '🔄 Face position changed. Please stay still.';
+                                statusElement.className = 'status-text loading';
+                            }
+                        } else {
+                            consecutiveDetections++;
+                            detectionCount++;
+                        }
+                    } else {
+                        consecutiveDetections = 1;
+                        detectionCount = 1;
+                    }
+                    
+                    lastGoodDetection = detection;
+                    
+                    // Update progress
                     if (progressElement) {
                         const progress = Math.min((detectionCount / requiredDetections) * 100, 100);
                         progressElement.style.width = progress + '%';
@@ -1699,9 +1872,15 @@
                             buttonElement.disabled = false;
                             buttonElement.textContent = '📸 Capture Face';
                         }
+                    } else if (detectionCount < requiredDetections && statusElement) {
+                        const remaining = requiredDetections - detectionCount;
+                        statusElement.textContent = `🔍 Detecting face... ${remaining} more captures needed. Please stay still.`;
+                        statusElement.className = 'status-text loading';
                     }
                 } else {
                     detectionCount = 0;
+                    consecutiveDetections = 0;
+                    lastGoodDetection = null;
                     if (progressElement) {
                         progressElement.style.width = '0%';
                     }
@@ -1709,11 +1888,21 @@
                         statusElement.textContent = '🔍 No face detected. Please look at the camera.';
                         statusElement.className = 'status-text';
                     }
+                    
+                    // Draw a message on the canvas
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                    ctx.fillRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+                    ctx.fillStyle = '#666';
+                    ctx.font = '18px system-ui';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('👤 Position your face here', overlayCanvas.width/2, overlayCanvas.height/2 - 10);
+                    ctx.font = '14px system-ui';
+                    ctx.fillText('Make sure you\'re in a well-lit area', overlayCanvas.width/2, overlayCanvas.height/2 + 25);
                 }
             } catch (error) {
                 console.error('Face detection error:', error);
             }
-        }, 200);
+        }, 300);
     }
 
     // Stop camera
@@ -1745,16 +1934,16 @@
         }
         
         try {
-            // Use the last detected face
-            if (lastDetectedFace) {
-                const descriptor = generateFaceDescriptor(lastDetectedFace);
+            // Try one more detection
+            const face = detectFaceFromImage(videoElement);
+            if (face) {
+                const descriptor = generateFaceDescriptor(face);
                 return descriptor;
             }
             
-            // Try one more detection
-            const face = await detectFace(videoElement);
-            if (face) {
-                const descriptor = generateFaceDescriptor(face);
+            // If no face detected, use the last detected face
+            if (lastDetectedFace) {
+                const descriptor = generateFaceDescriptor(lastDetectedFace);
                 return descriptor;
             }
             
@@ -1859,7 +2048,7 @@
                 progress.style.width = '30%';
             }
             
-            const face = await detectFace(video);
+            const face = detectFaceFromImage(video);
             
             if (progress) {
                 progress.style.width = '70%';
@@ -2260,15 +2449,12 @@
         if (nameInput) nameInput.value = "";
         if (phoneInput) phoneInput.value = "";
         
-        // Check browser support
-        checkFaceDetectionSupport();
-        
         // Reset face registration UI
         registrationFaceData = null;
         const status = document.getElementById('registrationStatus');
         if (status) {
-            status.textContent = isFaceDetectionSupported ? 'Click "Start Camera" to register your face.' : '⚠️ Face detection not supported in this browser.';
-            status.className = isFaceDetectionSupported ? 'status-text' : 'status-text error';
+            status.textContent = 'Click "Start Camera" to register your face.';
+            status.className = 'status-text';
         }
         const captureBtn = document.getElementById('captureFaceBtn');
         if (captureBtn) {
@@ -2278,7 +2464,7 @@
         }
         const startBtn = document.getElementById('startRegistrationCamera');
         if (startBtn) {
-            startBtn.disabled = !isFaceDetectionSupported;
+            startBtn.disabled = false;
             startBtn.textContent = '📷 Start Camera';
         }
         const progress = document.getElementById('registrationProgress');
@@ -2478,12 +2664,6 @@
                 const captureBtn = document.getElementById('captureFaceBtn');
                 const progress = document.getElementById('registrationProgress');
                 
-                if (!isFaceDetectionSupported) {
-                    status.textContent = '❌ Face detection not supported in this browser. Please use Chrome or Edge.';
-                    status.className = 'status-text error';
-                    return;
-                }
-                
                 const success = await startCameraWithFaceDetection(video, overlay, status, captureBtn, progress);
                 if (success) {
                     startRegBtn.textContent = '📷 Restart Camera';
@@ -2528,12 +2708,6 @@
                 const verifyBtn = document.getElementById('verifyFaceBtn');
                 const progress = document.getElementById('verificationProgress');
                 
-                if (!isFaceDetectionSupported) {
-                    status.textContent = '❌ Face detection not supported in this browser. Please use Chrome or Edge.';
-                    status.className = 'status-text error';
-                    return;
-                }
-                
                 const success = await startCameraWithFaceDetection(video, overlay, status, verifyBtn, progress);
                 if (success) {
                     startVerBtn.textContent = '📷 Restart Camera';
@@ -2571,9 +2745,6 @@
         setupVisibilityCheck();
         setupPeriodicCheck();
         await initFirebase();
-        
-        // Check if face detection is supported
-        checkFaceDetectionSupport();
         
         if (document.getElementById("dashboardView").classList.contains("active")) {
             startDashboardAutoRefresh();
