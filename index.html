@@ -172,6 +172,25 @@
             transform: scale(1.02);
         }
 
+        .btn-cancel-order {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.9rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-weight: 600;
+            transition: 0.2s;
+            position: relative;
+            z-index: 10;
+        }
+
+        .btn-cancel-order:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -192,6 +211,38 @@
         /* Menu Management Styles */
         .menu-management-panel {
             padding: 1.5rem;
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #e8e0d3;
+            padding-bottom: 0.5rem;
+        }
+
+        .admin-tab {
+            background: #ede3d6;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+            color: #5a3e2b;
+        }
+
+        .admin-tab.active {
+            background: #e67e22;
+            color: white;
+        }
+
+        .admin-tab-content {
+            display: none;
+        }
+
+        .admin-tab-content.active {
+            display: block;
         }
 
         .add-menu-form {
@@ -245,6 +296,30 @@
             background: #f5f0ea;
         }
 
+        .menu-card.out-of-stock {
+            opacity: 0.5;
+            background: #fce4e4;
+            border-color: #e74c3c;
+        }
+
+        .stock-badge {
+            display: inline-block;
+            background: #27ae60;
+            color: white;
+            padding: 0.1rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-top: 4px;
+        }
+
+        .stock-badge.low {
+            background: #f39c12;
+        }
+
+        .stock-badge.empty {
+            background: #e74c3c;
+        }
+
         .time-settings {
             margin: 8px 0;
             display: flex;
@@ -276,6 +351,7 @@
             display: flex;
             gap: 6px;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
         .btn-icon {
@@ -294,6 +370,34 @@
             padding: 0.5rem 1rem;
             border-radius: 40px;
             cursor: pointer;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+
+        .btn-warning:hover {
+            background: #e08e0b;
         }
 
         /* Guests Sidebar */
@@ -432,6 +536,7 @@
             border: 1px solid #efe2d4;
             transition: all 0.3s ease;
             cursor: pointer;
+            position: relative;
         }
 
         .order-card.new-order {
@@ -447,6 +552,12 @@
         .order-card.clicked {
             background: white !important;
             border-left: 1px solid #efe2d4 !important;
+        }
+
+        .order-card .cancel-btn-container {
+            margin-top: 6px;
+            display: flex;
+            justify-content: flex-end;
         }
 
         @keyframes pulse {
@@ -489,9 +600,18 @@
         }
 
         .btn-danger {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            cursor: pointer;
+        }
+
+        .btn-danger-outline {
             background: transparent;
-            border: 1px solid #e0cfbc;
-            color: #c0392b;
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
             padding: 0.4rem 1rem;
             border-radius: 40px;
             cursor: pointer;
@@ -549,6 +669,12 @@
             background: #f0ece6;
         }
 
+        .menu-item-card .stock-info {
+            font-size: 0.6rem;
+            color: #b28b65;
+            margin-top: 2px;
+        }
+
         .qty-control {
             display: flex;
             align-items: center;
@@ -566,6 +692,11 @@
             border-radius: 50%;
             cursor: pointer;
             font-size: 1rem;
+        }
+
+        .qty-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
         }
 
         .cart-summary {
@@ -686,6 +817,40 @@
             padding: 0.5rem;
         }
 
+        .inventory-item {
+            background: white;
+            border-radius: 1rem;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #f0deca;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .inventory-item .item-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .inventory-item .stock-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .inventory-item .stock-control input {
+            width: 70px;
+            padding: 0.3rem;
+            border: 1px solid #e0cfbc;
+            border-radius: 20px;
+            text-align: center;
+        }
+
         @media (max-width: 700px) {
             body { padding: 1rem; }
         }
@@ -722,11 +887,12 @@
     </div>
 </div>
 
-<!-- Password Modal -->
+<!-- Admin Password Modal -->
 <div id="passwordModal" class="password-modal">
     <div class="password-box">
         <h3>Admin Access</h3>
-        <input type="password" id="adminPassInput" placeholder="Password">
+        <p style="color:#b28b65; font-size:0.8rem; margin-bottom:0.5rem;">Enter admin password to access Dashboard or Menu</p>
+        <input type="password" id="adminPassInput" placeholder="Admin Password">
         <div style="display:flex; gap:1rem; justify-content:center;">
             <button id="cancelPasswordBtn" class="btn-outline">Cancel</button>
             <button id="submitPasswordBtn" class="btn-primary">Unlock</button>
@@ -734,14 +900,28 @@
     </div>
 </div>
 
-<!-- Delete Password Modal -->
+<!-- Delete Customer Password Modal -->
 <div id="deletePasswordModal" class="password-modal">
     <div class="password-box">
         <h3>Confirm Delete Customer</h3>
-        <input type="password" id="deletePassInput" placeholder="Password">
+        <p style="color:#b28b65; font-size:0.8rem; margin-bottom:0.5rem;">Enter admin password to delete this customer</p>
+        <input type="password" id="deletePassInput" placeholder="Admin Password">
         <div style="display:flex; gap:1rem; justify-content:center;">
             <button id="cancelDeleteBtn" class="btn-outline">Cancel</button>
             <button id="confirmDeleteBtn" class="btn-danger">Delete</button>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel Order Password Modal -->
+<div id="cancelOrderPasswordModal" class="password-modal">
+    <div class="password-box">
+        <h3>Cancel Order</h3>
+        <p style="color:#b28b65; font-size:0.9rem; margin-bottom:0.5rem;">Enter <strong>cancel password</strong> to cancel this order</p>
+        <input type="password" id="cancelOrderPassInput" placeholder="Cancel Password">
+        <div style="display:flex; gap:1rem; justify-content:center; margin-top:1rem;">
+            <button id="cancelOrderPasswordCancelBtn" class="btn-outline">Cancel</button>
+            <button id="confirmCancelOrderBtn" class="btn-danger">Cancel Order</button>
         </div>
     </div>
 </div>
@@ -798,7 +978,8 @@
         customers: [],
         menuItems: [],
         orders: [],
-        lastResetDate: null
+        lastResetDate: null,
+        cancelledOrders: []
     };
     
     let nextMenuId = 1;
@@ -806,9 +987,14 @@
     let currentModalCustomerId = null;
     let currentPopupCustomerId = null;
 
-    const ADMIN_PASSWORD = "admin123";
+    // SEPARATE PASSWORDS
+    const ADMIN_PASSWORD = "admin123";      // For Dashboard and Menu access
+    const CANCEL_PASSWORD = "cancel123";    // For cancelling orders
+    const DELETE_PASSWORD = "admin123";     // For deleting customers (same as admin)
+    
     let activeProtectedView = null;
     let pendingDeleteCustomerId = null;
+    let pendingCancelOrderId = null;
     const CURRENCY = "PHP ";
 
     // Midnight reset timer reference
@@ -847,7 +1033,16 @@
         if (lastReset !== today) {
             const oldOrdersCount = db.orders.length;
             db.orders = [];
+            db.cancelledOrders = [];
             db.lastResetDate = new Date().toISOString();
+            
+            // Reset stock for all items (restore to default)
+            db.menuItems.forEach(item => {
+                if (item.defaultStock !== undefined) {
+                    item.stock = item.defaultStock;
+                }
+            });
+            
             saveDatabase();
             
             // Clear tracking on reset
@@ -966,11 +1161,8 @@
 
     // Mark order as clicked - turns off highlight IMMEDIATELY
     function markOrderAsClicked(orderId) {
-        console.log("Order clicked:", orderId); // Debug log
         if (!clickedOrders.has(orderId)) {
             clickedOrders.add(orderId);
-            console.log("Order marked as clicked, highlight removed"); // Debug log
-            // Immediately re-render to update the UI
             if (document.getElementById("dashboardView").classList.contains("active")) {
                 renderDashboard();
             }
@@ -979,16 +1171,17 @@
 
     // Check if an order should be highlighted
     function shouldHighlightOrder(orderId, orderTimestamp) {
-        // If clicked before, never highlight again
         if (clickedOrders.has(orderId)) {
             return false;
         }
         
-        // Check if order was created in the last 5 minutes
+        if (db.cancelledOrders && db.cancelledOrders.includes(orderId)) {
+            return false;
+        }
+        
         const now = Date.now();
         const isWithin5Minutes = (now - orderTimestamp) < 300000;
         
-        // Store the highlight start time if not already stored and should be highlighted
         if (isWithin5Minutes && !orderHighlightStartTime.has(orderId)) {
             orderHighlightStartTime.set(orderId, orderTimestamp);
         }
@@ -996,10 +1189,84 @@
         return isWithin5Minutes;
     }
 
+    function isOrderCancelled(orderId) {
+        return db.cancelledOrders && db.cancelledOrders.includes(orderId);
+    }
+
+    // ========== INVENTORY FUNCTIONS ==========
+    function getItemStock(itemId) {
+        const item = db.menuItems.find(i => i.id === itemId);
+        return item ? item.stock || 0 : 0;
+    }
+
+    function isItemInStock(itemId, quantity = 1) {
+        const item = db.menuItems.find(i => i.id === itemId);
+        if (!item) return false;
+        const stock = item.stock !== undefined ? item.stock : 999;
+        return stock >= quantity;
+    }
+
+    function deductStock(itemId, quantity) {
+        const item = db.menuItems.find(i => i.id === itemId);
+        if (!item) return false;
+        if (item.stock === undefined) item.stock = 999;
+        if (item.stock < quantity) return false;
+        item.stock -= quantity;
+        if (item.stock <= 0) {
+            item.stock = 0;
+            item.available = false;
+            showNotification(`⚠️ ${item.name} is now out of stock!`);
+        } else if (item.stock <= 5) {
+            showNotification(`⚠️ ${item.name} has only ${item.stock} left in stock!`);
+        }
+        saveDatabase();
+        return true;
+    }
+
+    function addStock(itemId, quantity) {
+        const item = db.menuItems.find(i => i.id === itemId);
+        if (!item) return false;
+        if (item.stock === undefined) item.stock = 0;
+        item.stock += quantity;
+        // If stock was 0 and we add stock, make it available again
+        if (item.stock > 0 && !item.available) {
+            item.available = true;
+            showNotification(`✅ ${item.name} is now back in stock!`);
+        }
+        saveDatabase();
+        return true;
+    }
+
+    function returnStockForOrder(orderId) {
+        const order = db.orders.find(o => o.id === orderId);
+        if (!order) return false;
+        
+        let returnedItems = [];
+        order.items.forEach(item => {
+            const menuItem = db.menuItems.find(i => i.name === item.name);
+            if (menuItem) {
+                if (menuItem.stock === undefined) menuItem.stock = 0;
+                menuItem.stock += item.quantity;
+                // Make available again if stock > 0
+                if (menuItem.stock > 0) {
+                    menuItem.available = true;
+                }
+                returnedItems.push(`${item.quantity}x ${item.name}`);
+            }
+        });
+        
+        saveDatabase();
+        if (returnedItems.length > 0) {
+            showNotification(`🔄 Stock returned: ${returnedItems.join(', ')}`);
+        }
+        return true;
+    }
+
     // ========== EXCEL EXPORT FUNCTION ==========
     function exportToExcel() {
-        if (db.orders.length === 0) {
-            alert("No orders to export!");
+        const activeOrders = db.orders.filter(o => !isOrderCancelled(o.id));
+        if (activeOrders.length === 0) {
+            alert("No active orders to export!");
             return;
         }
 
@@ -1014,7 +1281,7 @@
             'Total Amount (PHP)'
         ]);
         
-        const sortedOrders = [...db.orders].sort((a, b) => b.timestamp - a.timestamp);
+        const sortedOrders = [...activeOrders].sort((a, b) => b.timestamp - a.timestamp);
         
         sortedOrders.forEach(order => {
             const customer = getCustomerById(order.customerId);
@@ -1034,12 +1301,12 @@
         
         exportData.push([]);
         exportData.push(['SUMMARY REPORT', '', '', '', '', '']);
-        exportData.push(['Total Orders', db.orders.length, '', '', '', '']);
+        exportData.push(['Total Orders', activeOrders.length, '', '', '', '']);
         
-        const totalRevenue = db.orders.reduce((sum, order) => sum + order.total, 0);
+        const totalRevenue = activeOrders.reduce((sum, order) => sum + order.total, 0);
         exportData.push(['Total Revenue', `${CURRENCY}${totalRevenue.toFixed(2)}`, '', '', '', '']);
         
-        const uniqueCustomers = new Set(db.orders.map(o => o.customerId)).size;
+        const uniqueCustomers = new Set(activeOrders.map(o => o.customerId)).size;
         exportData.push(['Unique Customers', uniqueCustomers, '', '', '', '']);
         
         exportData.push([]);
@@ -1065,7 +1332,7 @@
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
         
-        showNotification(`✅ Exported ${db.orders.length} orders to Excel!`);
+        showNotification(`✅ Exported ${activeOrders.length} orders to Excel!`);
     }
 
     function loadDatabase() {
@@ -1078,6 +1345,22 @@
                 if (!db.menuItems) db.menuItems = [];
                 if (!db.orders) db.orders = [];
                 if (!db.lastResetDate) db.lastResetDate = null;
+                if (!db.cancelledOrders) db.cancelledOrders = [];
+                
+                // Initialize stock for existing items
+                db.menuItems.forEach(item => {
+                    if (item.stock === undefined) {
+                        item.stock = 999;
+                        item.defaultStock = 999;
+                    }
+                    if (item.defaultStock === undefined) {
+                        item.defaultStock = item.stock;
+                    }
+                    // If stock is 0, set available to false
+                    if (item.stock <= 0) {
+                        item.available = false;
+                    }
+                });
             } catch(e) { initDefaultData(); }
         } else {
             initDefaultData();
@@ -1092,6 +1375,13 @@
             if (item.timeStart === undefined) item.timeStart = "00:00";
             if (item.timeEnd === undefined) item.timeEnd = "23:59";
             if (item.useTimeLimit === undefined) item.useTimeLimit = false;
+            if (item.stock === undefined) {
+                item.stock = 999;
+                item.defaultStock = 999;
+            }
+            if (item.defaultStock === undefined) {
+                item.defaultStock = item.stock;
+            }
         });
         
         saveDatabase();
@@ -1103,14 +1393,15 @@
             { id: "c2", name: "Amelia Chen", phone: "555-0143", createdAt: Date.now() - 86400000 }
         ];
         db.menuItems = [
-            { id: 1, name: "Truffle Risotto", price: 450, available: true, useTimeLimit: true, timeStart: "11:00", timeEnd: "21:00" },
-            { id: 2, name: "Roasted Chicken", price: 375, available: true, useTimeLimit: false, timeStart: "00:00", timeEnd: "23:59" },
-            { id: 3, name: "Garden Salad", price: 170, available: true, useTimeLimit: false, timeStart: "00:00", timeEnd: "23:59" },
-            { id: 4, name: "Chocolate Tart", price: 145, available: true, useTimeLimit: true, timeStart: "13:00", timeEnd: "20:00" },
-            { id: 5, name: "Beef Steak", price: 580, available: true, useTimeLimit: true, timeStart: "17:00", timeEnd: "22:00" },
-            { id: 6, name: "Lemonade", price: 90, available: true, useTimeLimit: false, timeStart: "00:00", timeEnd: "23:59" }
+            { id: 1, name: "Truffle Risotto", price: 450, available: true, useTimeLimit: true, timeStart: "11:00", timeEnd: "21:00", stock: 10, defaultStock: 10 },
+            { id: 2, name: "Roasted Chicken", price: 375, available: true, useTimeLimit: false, timeStart: "00:00", timeEnd: "23:59", stock: 15, defaultStock: 15 },
+            { id: 3, name: "Garden Salad", price: 170, available: true, useTimeLimit: false, timeStart: "00:00", timeEnd: "23:59", stock: 20, defaultStock: 20 },
+            { id: 4, name: "Chocolate Tart", price: 145, available: true, useTimeLimit: true, timeStart: "13:00", timeEnd: "20:00", stock: 8, defaultStock: 8 },
+            { id: 5, name: "Beef Steak", price: 580, available: true, useTimeLimit: true, timeStart: "17:00", timeEnd: "22:00", stock: 12, defaultStock: 12 },
+            { id: 6, name: "Lemonade", price: 90, available: true, useTimeLimit: false, timeStart: "00:00", timeEnd: "23:59", stock: 25, defaultStock: 25 }
         ];
         db.orders = [];
+        db.cancelledOrders = [];
         db.lastResetDate = new Date().toISOString();
         saveDatabase();
     }
@@ -1154,6 +1445,7 @@
                         if (!db.menuItems) db.menuItems = [];
                         if (!db.orders) db.orders = [];
                         if (!db.lastResetDate) db.lastResetDate = null;
+                        if (!db.cancelledOrders) db.cancelledOrders = [];
                         saveDatabase();
                         refreshUI();
                         syncInProgress = false;
@@ -1186,6 +1478,7 @@
                     if (!db.menuItems) db.menuItems = [];
                     if (!db.orders) db.orders = [];
                     if (!db.lastResetDate) db.lastResetDate = null;
+                    if (!db.cancelledOrders) db.cancelledOrders = [];
                     saveDatabase();
                     syncInProgress = false;
                     updateSyncStatus(true, "Connected");
@@ -1246,6 +1539,7 @@
 
     function isItemAvailableNow(item) {
         if (!item.available) return false;
+        if (item.stock !== undefined && item.stock <= 0) return false;
         if (!item.useTimeLimit) return true;
         const now = new Date();
         const currentTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
@@ -1264,7 +1558,7 @@
             return;
         }
         db.customers.forEach(cust => {
-            const orderCount = db.orders.filter(o => o.customerId === cust.id).length;
+            const orderCount = db.orders.filter(o => o.customerId === cust.id && !isOrderCancelled(o.id)).length;
             const div = document.createElement("div");
             div.className = "guest-item";
             div.innerHTML = `<div><div class="guest-name">${escapeHtml(cust.name)}</div><div class="guest-phone">${escapeHtml(cust.phone)}</div></div><span class="order-count-badge">${orderCount}</span>`;
@@ -1278,12 +1572,13 @@
         const cust = getCustomerById(customerId);
         if (!cust) return;
         const custOrders = getOrdersByCustomer(customerId);
+        const activeOrders = custOrders.filter(o => !isOrderCancelled(o.id));
         
         let ordersHtml = "";
-        if (custOrders.length === 0) {
-            ordersHtml = '<div class="empty-state">No orders yet today. Orders reset daily at midnight.</div>';
+        if (activeOrders.length === 0) {
+            ordersHtml = '<div class="empty-state">No active orders yet today. Orders reset daily at midnight.</div>';
         } else {
-            custOrders.forEach(order => {
+            activeOrders.forEach(order => {
                 let itemsHtml = "";
                 order.items.forEach(item => { itemsHtml += `<div class="order-item-line">${item.quantity}x ${item.name}</div>`; });
                 ordersHtml += `<div class="order-card"><div class="order-date">${order.date}</div><div class="order-items">${itemsHtml}</div><div class="order-total">Total ${CURRENCY}${order.total.toFixed(2)}</div></div>`;
@@ -1295,13 +1590,13 @@
             popupBody.innerHTML = `
                 <div class="customer-info-popup">
                     <h2>${escapeHtml(cust.name)}</h2>
-                    <p>${escapeHtml(cust.phone)} · ${custOrders.length} order(s) today</p>
+                    <p>${escapeHtml(cust.phone)} · ${activeOrders.length} active order(s) today</p>
                 </div>
                 <button id="popupNewOrderBtn" class="btn-primary" style="width:100%; margin-bottom:1rem;">+ New Order</button>
                 <div style="font-weight:600; margin-bottom:0.5rem;">Today's Orders</div>
                 <div id="popupOrdersContainer">${ordersHtml}</div>
                 <div style="margin-top:1rem; text-align:center;">
-                    <button id="popupDeleteCustomerBtn" class="btn-danger">Delete Customer</button>
+                    <button id="popupDeleteCustomerBtn" class="btn-danger-outline">Delete Customer</button>
                 </div>
             `;
         }
@@ -1346,27 +1641,38 @@
         grid.innerHTML = "";
         db.menuItems.forEach(item => {
             const isAvailable = isItemAvailableNow(item);
+            const stock = item.stock !== undefined ? item.stock : 999;
             const cartItem = currentModalCart.find(c => c.id === item.id);
             const qty = cartItem ? cartItem.quantity : 0;
             const div = document.createElement("div");
             div.className = `menu-item-card ${!isAvailable ? 'unavailable-modal' : ''}`;
             let timeInfo = "";
+            let stockInfo = "";
+            
             if (item.useTimeLimit && !isAvailable && item.available) {
                 timeInfo = `<div style="font-size:0.65rem; color:#e67e22;">Available ${item.timeStart}-${item.timeEnd}</div>`;
             } else if (!item.available) {
                 timeInfo = `<div style="font-size:0.65rem; color:#c0392b;">Unavailable</div>`;
             }
+            
+            if (stock <= 0) {
+                stockInfo = `<div style="font-size:0.65rem; color:#e74c3c;">Out of Stock</div>`;
+            } else if (stock <= 5) {
+                stockInfo = `<div style="font-size:0.65rem; color:#f39c12;">Only ${stock} left</div>`;
+            }
+            
             div.innerHTML = `
                 <div><strong>${escapeHtml(item.name)}</strong></div>
                 <div>${CURRENCY}${item.price.toFixed(2)}</div>
+                ${stockInfo}
                 <div class="qty-control">
-                    <button class="qty-btn minus" data-id="${item.id}" ${!isAvailable ? 'disabled' : ''}>-</button>
+                    <button class="qty-btn minus" data-id="${item.id}" ${!isAvailable || stock <= 0 ? 'disabled' : ''}>-</button>
                     <span id="modalQty-${item.id}">${qty}</span>
-                    <button class="qty-btn plus" data-id="${item.id}" ${!isAvailable ? 'disabled' : ''}>+</button>
+                    <button class="qty-btn plus" data-id="${item.id}" ${!isAvailable || stock <= 0 ? 'disabled' : ''}>+</button>
                 </div>
                 ${timeInfo}
             `;
-            if (isAvailable) {
+            if (isAvailable && stock > 0) {
                 const minusBtn = div.querySelector('.minus');
                 const plusBtn = div.querySelector('.plus');
                 if (minusBtn) minusBtn.onclick = (e) => { e.stopPropagation(); updateModalItemQuantity(item.id, -1); };
@@ -1378,10 +1684,20 @@
 
     function updateModalItemQuantity(itemId, delta) {
         const menuItem = db.menuItems.find(i => i.id === itemId);
-        if (!menuItem || !isItemAvailableNow(menuItem)) return;
+        if (!menuItem) return;
+        if (!isItemAvailableNow(menuItem)) return;
+        
+        const stock = menuItem.stock !== undefined ? menuItem.stock : 999;
         const existingIndex = currentModalCart.findIndex(c => c.id === itemId);
         const currentQty = existingIndex !== -1 ? currentModalCart[existingIndex].quantity : 0;
         const newQty = currentQty + delta;
+        
+        if (newQty < 0) return;
+        if (newQty > stock) {
+            showNotification(`⚠️ Only ${stock} available in stock!`);
+            return;
+        }
+        
         if (newQty <= 0) {
             if (existingIndex !== -1) currentModalCart.splice(existingIndex, 1);
         } else {
@@ -1414,6 +1730,26 @@
 
     function saveModalOrder() {
         if (!currentModalCustomerId || currentModalCart.length === 0) { alert("No items ordered."); return; }
+        
+        // Check stock for all items
+        for (let cartItem of currentModalCart) {
+            const menuItem = db.menuItems.find(i => i.id === cartItem.id);
+            if (!menuItem) {
+                alert(`Item not found: ${cartItem.name}`);
+                return;
+            }
+            const stock = menuItem.stock !== undefined ? menuItem.stock : 999;
+            if (stock < cartItem.quantity) {
+                alert(`Not enough stock for ${menuItem.name}. Available: ${stock}`);
+                return;
+            }
+        }
+        
+        // Deduct stock for all items
+        for (let cartItem of currentModalCart) {
+            deductStock(cartItem.id, cartItem.quantity);
+        }
+        
         const now = new Date();
         const formattedDate = `${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} · ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
         const total = currentModalCart.reduce((s, i) => s + (i.price * i.quantity), 0);
@@ -1427,7 +1763,6 @@
         };
         db.orders.push(newOrder);
         
-        // Store highlight start time for this new order
         orderHighlightStartTime.set(newOrder.id, newOrder.timestamp);
         
         saveDatabase();
@@ -1447,11 +1782,104 @@
         currentModalCart = [];
     }
 
+    // ========== CANCEL ORDER FUNCTION ==========
+    function requestCancelOrderPassword(orderId) {
+        if (isOrderCancelled(orderId)) {
+            showNotification("⚠️ Order is already cancelled");
+            return;
+        }
+        
+        pendingCancelOrderId = orderId;
+        const passInput = document.getElementById("cancelOrderPassInput");
+        if (passInput) passInput.value = "";
+        const modal = document.getElementById("cancelOrderPasswordModal");
+        if (modal) modal.classList.add("active");
+    }
+
+    function confirmCancelOrder() {
+        const passInput = document.getElementById("cancelOrderPassInput");
+        const pwd = passInput ? passInput.value : "";
+        if (pwd !== CANCEL_PASSWORD) { 
+            alert("Wrong cancel password!"); 
+            const modal = document.getElementById("cancelOrderPasswordModal");
+            if (modal) modal.classList.remove("active");
+            return; 
+        }
+        
+        if (pendingCancelOrderId) {
+            const orderExists = db.orders.some(o => o.id === pendingCancelOrderId);
+            const alreadyCancelled = db.cancelledOrders && db.cancelledOrders.includes(pendingCancelOrderId);
+            
+            if (!orderExists) {
+                alert("Order not found!");
+                pendingCancelOrderId = null;
+                const modal = document.getElementById("cancelOrderPasswordModal");
+                if (modal) modal.classList.remove("active");
+                return;
+            }
+            
+            if (alreadyCancelled) {
+                alert("Order is already cancelled!");
+                pendingCancelOrderId = null;
+                const modal = document.getElementById("cancelOrderPasswordModal");
+                if (modal) modal.classList.remove("active");
+                return;
+            }
+            
+            // Return stock before cancelling
+            returnStockForOrder(pendingCancelOrderId);
+            
+            if (!db.cancelledOrders) db.cancelledOrders = [];
+            db.cancelledOrders.push(pendingCancelOrderId);
+            
+            if (orderHighlightStartTime.has(pendingCancelOrderId)) {
+                orderHighlightStartTime.delete(pendingCancelOrderId);
+            }
+            if (clickedOrders.has(pendingCancelOrderId)) {
+                clickedOrders.delete(pendingCancelOrderId);
+            }
+            
+            saveDatabase();
+            
+            const order = db.orders.find(o => o.id === pendingCancelOrderId);
+            const customer = order ? getCustomerById(order.customerId) : null;
+            const customerName = customer ? customer.name : "Unknown";
+            
+            showNotification(`❌ Order cancelled for ${customerName}`);
+            
+            if (currentPopupCustomerId) {
+                closeCustomerPopup();
+            }
+            
+            renderGuests();
+            if (document.getElementById("dashboardView").classList.contains("active")) {
+                renderDashboard();
+            }
+        }
+        
+        const modal = document.getElementById("cancelOrderPasswordModal");
+        if (modal) modal.classList.remove("active");
+        pendingCancelOrderId = null;
+    }
+
+    function cancelOrderPasswordCancel() {
+        const modal = document.getElementById("cancelOrderPasswordModal");
+        if (modal) modal.classList.remove("active");
+        pendingCancelOrderId = null;
+    }
+
+    // Make functions globally accessible
+    window.requestCancelOrderPassword = requestCancelOrderPassword;
+    window.handleOrderClick = function(orderId) {
+        if (isOrderCancelled(orderId)) return;
+        markOrderAsClicked(orderId);
+    };
+
+    // ========== RENDER DASHBOARD ==========
     function renderDashboard() {
         const container = document.getElementById("dashboardContent");
         if (!container) return;
         
-        // Check for expired highlights (5 minutes passed)
         const now = Date.now();
         let needsRefresh = false;
         for (let [orderId, startTime] of orderHighlightStartTime.entries()) {
@@ -1461,8 +1889,10 @@
             }
         }
         
+        const activeOrders = db.orders.filter(o => !isOrderCancelled(o.id));
+        
         const menuTotals = new Map();
-        db.orders.forEach(order => {
+        activeOrders.forEach(order => {
             order.items.forEach(item => {
                 const existing = menuTotals.get(item.name) || { quantity: 0, revenue: 0 };
                 existing.quantity += item.quantity;
@@ -1470,17 +1900,16 @@
                 menuTotals.set(item.name, existing);
             });
         });
-        const totalOrders = db.orders.length;
-        const totalRevenue = db.orders.reduce((s, o) => s + o.total, 0);
-        const uniqueCust = new Set(db.orders.map(o => o.customerId)).size;
+        const totalOrders = activeOrders.length;
+        const totalRevenue = activeOrders.reduce((s, o) => s + o.total, 0);
+        const uniqueCust = new Set(activeOrders.map(o => o.customerId)).size;
         
         let menuSummaryHtml = "";
         if (menuTotals.size === 0) menuSummaryHtml = `<tr><td colspan="3" style="text-align:center;">No orders today</td></td>`;
         else for (let [name, data] of menuTotals.entries()) menuSummaryHtml += `<tr><td>${escapeHtml(name)}</td><td>${data.quantity}</td><td>${CURRENCY}${data.revenue.toFixed(2)}</td></tr>`;
         
-        // Group orders by customer and get latest order timestamp for sorting
         const customersWithOrders = new Map();
-        db.orders.forEach(order => {
+        activeOrders.forEach(order => {
             const cust = getCustomerById(order.customerId);
             const customerName = cust ? cust.name : "Unknown";
             if (!customersWithOrders.has(order.customerId)) {
@@ -1498,13 +1927,12 @@
             }
         });
         
-        // Sort customers by latest order time (newest first)
         const sortedCustomers = Array.from(customersWithOrders.values()).sort((a, b) => b.latestOrderTime - a.latestOrderTime);
         
         let customerHistoryHtml = "";
         
         if (sortedCustomers.length === 0) {
-            customerHistoryHtml = '<div class="empty-state">No orders placed today.</div>';
+            customerHistoryHtml = '<div class="empty-state">No active orders placed today.</div>';
         } else {
             sortedCustomers.forEach(customer => {
                 const sortedOrders = customer.orders.sort((a, b) => b.timestamp - a.timestamp);
@@ -1518,6 +1946,9 @@
                             <div class="order-date">🕐 ${order.date}</div>
                             <div class="order-item-line">📋 ${itemsText}</div>
                             <div class="order-total">💰 Total ${CURRENCY}${order.total.toFixed(2)}</div>
+                            <div class="cancel-btn-container">
+                                <button class="btn-cancel-order" onclick="event.stopPropagation(); window.requestCancelOrderPassword('${order.id}')">✕ Cancel</button>
+                            </div>
                         </div>
                     `;
                 });
@@ -1563,7 +1994,7 @@
                 <div class="section-title">📋 Customer Order History (By Latest Order)</div>
                 ${customerHistoryHtml}
                 <div style="font-size:0.7rem; color:#b28b65; text-align:center; margin-top:1rem; padding:0.5rem;">
-                    🟡 <strong>Yellow highlight</strong> = New order (last 5 minutes) - <strong>Click to remove highlight immediately!</strong>
+                    🟡 <strong>Yellow highlight</strong> = New order (last 5 minutes) &nbsp;|&nbsp; ❌ <strong>Cancel</strong> = Remove order (requires cancel password: <strong>cancel123</strong>)
                 </div>
             </div>
         `;
@@ -1580,71 +2011,263 @@
         }
     }
 
-    // Global click handler for orders
-    window.handleOrderClick = function(orderId) {
-        console.log("Click handler triggered for order:", orderId);
-        markOrderAsClicked(orderId);
-    };
-
+    // ========== RENDER MENU MANAGEMENT ==========
     function renderMenuManagement() {
         const container = document.getElementById("menuManagementContent");
         if (!container) return;
         
         let html = `
-            <div class="add-menu-form">
-                <div class="form-group"><label>Dish name</label><input type="text" id="newMenuName"></div>
-                <div class="form-group"><label>Price</label><input type="number" id="newMenuPrice" step="0.01"></div>
-                <button id="addMenuSubmitBtn" class="btn-primary">+ Add</button>
+            <div class="admin-tabs">
+                <button class="admin-tab active" data-tab="menu">Menu Items</button>
+                <button class="admin-tab" data-tab="inventory">Inventory</button>
             </div>
-            <div class="menu-items-grid" id="menuItemsGrid"></div>
+            
+            <div id="tab-menu" class="admin-tab-content active">
+                <div class="add-menu-form">
+                    <div class="form-group"><label>Dish name</label><input type="text" id="newMenuName"></div>
+                    <div class="form-group"><label>Price</label><input type="number" id="newMenuPrice" step="0.01"></div>
+                    <div class="form-group"><label>Initial Stock</label><input type="number" id="newMenuStock" value="10"></div>
+                    <button id="addMenuSubmitBtn" class="btn-primary">+ Add</button>
+                </div>
+                <div class="menu-items-grid" id="menuItemsGrid"></div>
+            </div>
+            
+            <div id="tab-inventory" class="admin-tab-content">
+                <div style="margin-bottom:1rem; color:#b28b65; font-size:0.9rem;">
+                    <p>📦 Manage inventory stock levels. Items with 0 stock will be automatically marked as unavailable.</p>
+                </div>
+                <div id="inventoryList"></div>
+            </div>
         `;
         container.innerHTML = html;
         
+        // Tab switching
+        document.querySelectorAll('.admin-tab').forEach(tab => {
+            tab.onclick = function() {
+                document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                const tabName = this.getAttribute('data-tab');
+                document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+                document.getElementById(`tab-${tabName}`).classList.add('active');
+                if (tabName === 'inventory') {
+                    renderInventory();
+                }
+            };
+        });
+        
+        renderMenuItemsGrid();
+        renderInventory();
+        
+        const addBtn = document.getElementById("addMenuSubmitBtn");
+        if (addBtn) addBtn.onclick = addMenuItem;
+    }
+
+    function renderMenuItemsGrid() {
         const grid = document.getElementById("menuItemsGrid");
         if (!grid) return;
         grid.innerHTML = "";
         
         db.menuItems.forEach(item => {
             const isAvailNow = isItemAvailableNow(item);
+            const stock = item.stock !== undefined ? item.stock : 999;
+            const isOutOfStock = stock <= 0;
+            
+            let stockClass = '';
+            let stockBadge = '';
+            if (stock <= 0) {
+                stockClass = 'out-of-stock';
+                stockBadge = '<span class="stock-badge empty">Out of Stock</span>';
+            } else if (stock <= 5) {
+                stockBadge = `<span class="stock-badge low">${stock} left</span>`;
+            } else {
+                stockBadge = `<span class="stock-badge">${stock} in stock</span>`;
+            }
+            
             const card = document.createElement("div");
-            card.className = `menu-card ${!item.available || !isAvailNow ? 'unavailable' : ''}`;
-            card.innerHTML = `<div><strong>${escapeHtml(item.name)}</strong></div><div>${CURRENCY}${item.price.toFixed(2)}</div>
-                <div class="availability-check"><input type="checkbox" class="avail-checkbox" data-id="${item.id}" ${item.available ? 'checked' : ''}><span>Available</span></div>
-                <div class="time-settings"><input type="checkbox" class="time-limit-checkbox" data-id="${item.id}" ${item.useTimeLimit ? 'checked' : ''}><span>Time limit</span>
-                <input type="time" class="time-start" data-id="${item.id}" value="${item.timeStart}" ${!item.useTimeLimit ? 'disabled' : ''}>
-                <span>to</span><input type="time" class="time-end" data-id="${item.id}" value="${item.timeEnd}" ${!item.useTimeLimit ? 'disabled' : ''}></div>
-                <div class="menu-actions"><button class="btn-icon edit-menu" data-id="${item.id}">Edit</button><button class="btn-icon delete-menu" data-id="${item.id}">Delete</button></div>`;
+            card.className = `menu-card ${!item.available || !isAvailNow || isOutOfStock ? 'unavailable' : ''} ${isOutOfStock ? 'out-of-stock' : ''}`;
+            card.innerHTML = `
+                <div><strong>${escapeHtml(item.name)}</strong></div>
+                <div>${CURRENCY}${item.price.toFixed(2)}</div>
+                <div>${stockBadge}</div>
+                <div class="availability-check">
+                    <input type="checkbox" class="avail-checkbox" data-id="${item.id}" ${item.available && !isOutOfStock ? 'checked' : ''} ${isOutOfStock ? 'disabled' : ''}>
+                    <span>Available</span>
+                </div>
+                <div class="time-settings">
+                    <input type="checkbox" class="time-limit-checkbox" data-id="${item.id}" ${item.useTimeLimit ? 'checked' : ''}>
+                    <span>Time limit</span>
+                    <input type="time" class="time-start" data-id="${item.id}" value="${item.timeStart}" ${!item.useTimeLimit ? 'disabled' : ''}>
+                    <span>to</span>
+                    <input type="time" class="time-end" data-id="${item.id}" value="${item.timeEnd}" ${!item.useTimeLimit ? 'disabled' : ''}>
+                </div>
+                <div class="menu-actions">
+                    <button class="btn-icon edit-menu" data-id="${item.id}">Edit</button>
+                    <button class="btn-icon delete-menu" data-id="${item.id}">Delete</button>
+                </div>
+            `;
+            
             const availCheck = card.querySelector('.avail-checkbox');
-            if (availCheck) availCheck.onclick = () => { item.available = !item.available; saveDatabase(); renderMenuManagement(); };
+            if (availCheck && !isOutOfStock) {
+                availCheck.onclick = () => { 
+                    item.available = !item.available; 
+                    saveDatabase(); 
+                    renderMenuManagement(); 
+                };
+            }
+            
             const limitCheck = card.querySelector('.time-limit-checkbox');
-            if (limitCheck) limitCheck.onclick = () => { item.useTimeLimit = !item.useTimeLimit; saveDatabase(); renderMenuManagement(); };
+            if (limitCheck) {
+                limitCheck.onclick = () => { 
+                    item.useTimeLimit = !item.useTimeLimit; 
+                    saveDatabase(); 
+                    renderMenuManagement(); 
+                };
+            }
+            
             const timeStart = card.querySelector('.time-start');
-            if (timeStart) timeStart.onchange = (e) => { item.timeStart = e.target.value; saveDatabase(); };
+            if (timeStart) {
+                timeStart.onchange = (e) => { 
+                    item.timeStart = e.target.value; 
+                    saveDatabase(); 
+                };
+            }
+            
             const timeEnd = card.querySelector('.time-end');
-            if (timeEnd) timeEnd.onchange = (e) => { item.timeEnd = e.target.value; saveDatabase(); };
+            if (timeEnd) {
+                timeEnd.onchange = (e) => { 
+                    item.timeEnd = e.target.value; 
+                    saveDatabase(); 
+                };
+            }
+            
             const editBtn = card.querySelector(".edit-menu");
             if (editBtn) editBtn.onclick = () => editMenuItem(item.id);
+            
             const deleteBtn = card.querySelector(".delete-menu");
             if (deleteBtn) deleteBtn.onclick = () => deleteMenuItem(item.id);
+            
             grid.appendChild(card);
         });
-        
-        const addBtn = document.getElementById("addMenuSubmitBtn");
-        if (addBtn) addBtn.onclick = addMenuItem;
     }
+
+    function renderInventory() {
+        const container = document.getElementById("inventoryList");
+        if (!container) return;
+        container.innerHTML = "";
+        
+        db.menuItems.forEach(item => {
+            const stock = item.stock !== undefined ? item.stock : 0;
+            const div = document.createElement("div");
+            div.className = "inventory-item";
+            div.innerHTML = `
+                <div class="item-info">
+                    <strong>${escapeHtml(item.name)}</strong>
+                    <span style="color:#b28b65;">${CURRENCY}${item.price.toFixed(2)}</span>
+                    <span class="stock-badge ${stock <= 0 ? 'empty' : stock <= 5 ? 'low' : ''}">${stock} in stock</span>
+                </div>
+                <div class="stock-control">
+                    <button class="btn-warning" onclick="adjustStock(${item.id}, -1)">-1</button>
+                    <button class="btn-warning" onclick="adjustStock(${item.id}, -5)">-5</button>
+                    <input type="number" id="stock-input-${item.id}" value="${stock}" min="0" style="width:70px; padding:0.3rem; border:1px solid #e0cfbc; border-radius:20px; text-align:center;">
+                    <button class="btn-success" onclick="adjustStockFromInput(${item.id})">Set</button>
+                    <button class="btn-success" onclick="adjustStock(${item.id}, 1)">+1</button>
+                    <button class="btn-success" onclick="adjustStock(${item.id}, 5)">+5</button>
+                    <button class="btn-success" onclick="resetStock(${item.id})">↺ Reset</button>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    // Global functions for inventory buttons
+    window.adjustStock = function(itemId, amount) {
+        const item = db.menuItems.find(i => i.id === itemId);
+        if (!item) return;
+        if (item.stock === undefined) item.stock = 0;
+        const newStock = Math.max(0, item.stock + amount);
+        item.stock = newStock;
+        if (newStock <= 0) {
+            item.available = false;
+        } else if (newStock > 0 && !item.available) {
+            item.available = true;
+        }
+        saveDatabase();
+        renderInventory();
+        renderMenuItemsGrid();
+        if (document.getElementById("dashboardView").classList.contains("active")) {
+            renderDashboard();
+        }
+        showNotification(`📦 ${item.name} stock: ${newStock}`);
+    };
+
+    window.adjustStockFromInput = function(itemId) {
+        const input = document.getElementById(`stock-input-${itemId}`);
+        if (!input) return;
+        const value = parseInt(input.value);
+        if (isNaN(value) || value < 0) {
+            alert("Please enter a valid number");
+            return;
+        }
+        const item = db.menuItems.find(i => i.id === itemId);
+        if (!item) return;
+        item.stock = value;
+        if (value <= 0) {
+            item.available = false;
+        } else if (value > 0 && !item.available) {
+            item.available = true;
+        }
+        saveDatabase();
+        renderInventory();
+        renderMenuItemsGrid();
+        if (document.getElementById("dashboardView").classList.contains("active")) {
+            renderDashboard();
+        }
+        showNotification(`📦 ${item.name} stock set to: ${value}`);
+    };
+
+    window.resetStock = function(itemId) {
+        const item = db.menuItems.find(i => i.id === itemId);
+        if (!item) return;
+        const defaultStock = item.defaultStock || 10;
+        item.stock = defaultStock;
+        if (defaultStock > 0 && !item.available) {
+            item.available = true;
+        }
+        saveDatabase();
+        renderInventory();
+        renderMenuItemsGrid();
+        if (document.getElementById("dashboardView").classList.contains("active")) {
+            renderDashboard();
+        }
+        showNotification(`🔄 ${item.name} stock reset to: ${defaultStock}`);
+    };
 
     function addMenuItem() {
         const nameInput = document.getElementById("newMenuName");
         const priceInput = document.getElementById("newMenuPrice");
-        if (!nameInput || !priceInput) return;
+        const stockInput = document.getElementById("newMenuStock");
+        if (!nameInput || !priceInput || !stockInput) return;
         const name = nameInput.value.trim();
         const price = parseFloat(priceInput.value);
+        const stock = parseInt(stockInput.value) || 10;
         if (!name || isNaN(price) || price <= 0) return alert("Valid name & price");
-        db.menuItems.push({ id: nextMenuId++, name, price, available: true, useTimeLimit: false, timeStart: "00:00", timeEnd: "23:59" });
+        db.menuItems.push({ 
+            id: nextMenuId++, 
+            name, 
+            price, 
+            available: true, 
+            useTimeLimit: false, 
+            timeStart: "00:00", 
+            timeEnd: "23:59",
+            stock: stock,
+            defaultStock: stock
+        });
         saveDatabase();
         renderMenuManagement();
         nameInput.value = "";
         priceInput.value = "";
+        stockInput.value = "10";
+        showNotification(`✅ ${name} added with ${stock} stock!`);
     }
     
     function editMenuItem(id) {
@@ -1654,11 +2277,24 @@
         if (newName) item.name = newName.trim();
         const newPrice = parseFloat(prompt("Edit price:", item.price));
         if (!isNaN(newPrice) && newPrice > 0) item.price = newPrice;
-        saveDatabase(); renderMenuManagement();
+        const newStock = parseInt(prompt("Edit stock:", item.stock !== undefined ? item.stock : 10));
+        if (!isNaN(newStock) && newStock >= 0) {
+            item.stock = newStock;
+            if (newStock <= 0) item.available = false;
+            else if (newStock > 0 && !item.available) item.available = true;
+        }
+        saveDatabase(); 
+        renderMenuManagement();
+        showNotification(`✅ ${item.name} updated!`);
     }
     
     function deleteMenuItem(id) {
-        if (confirm("Remove this item?")) { db.menuItems = db.menuItems.filter(i => i.id !== id); saveDatabase(); renderMenuManagement(); }
+        if (confirm("Remove this item?")) { 
+            db.menuItems = db.menuItems.filter(i => i.id !== id); 
+            saveDatabase(); 
+            renderMenuManagement();
+            showNotification("🗑️ Item removed");
+        }
     }
 
     function openAddCustomerModal() {
@@ -1695,17 +2331,25 @@
     function confirmDeleteWithPassword() {
         const passInput = document.getElementById("deletePassInput");
         const pwd = passInput ? passInput.value : "";
-        if (pwd !== ADMIN_PASSWORD) { alert("Wrong password!"); 
+        if (pwd !== DELETE_PASSWORD) { 
+            alert("Wrong admin password!"); 
             const modal = document.getElementById("deletePasswordModal");
             if (modal) modal.classList.remove("active");
             return; 
         }
         if (pendingDeleteCustomerId) {
+            const customerOrders = db.orders.filter(o => o.customerId === pendingDeleteCustomerId);
+            // Return stock for customer orders before deleting
+            customerOrders.forEach(order => {
+                if (!db.cancelledOrders.includes(order.id)) {
+                    returnStockForOrder(order.id);
+                }
+            });
             db.orders = db.orders.filter(o => o.customerId !== pendingDeleteCustomerId);
             db.customers = db.customers.filter(c => c.id !== pendingDeleteCustomerId);
             saveDatabase();
             renderGuests();
-            alert("Customer deleted.");
+            alert("Customer and all their orders deleted.");
         }
         const modal = document.getElementById("deletePasswordModal");
         if (modal) modal.classList.remove("active");
@@ -1748,7 +2392,7 @@
                 updateNavActive("menuViewBtn"); 
                 stopDashboardAutoRefresh();
             }
-        } else { alert("Wrong password!"); }
+        } else { alert("Wrong admin password!"); }
         activeProtectedView = null;
     }
     
@@ -1814,6 +2458,13 @@
         
         const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
         if (cancelDeleteBtn) cancelDeleteBtn.onclick = cancelDelete;
+        
+        // Cancel order password modal events
+        const confirmCancelOrderBtn = document.getElementById("confirmCancelOrderBtn");
+        if (confirmCancelOrderBtn) confirmCancelOrderBtn.onclick = confirmCancelOrder;
+        
+        const cancelOrderPasswordCancelBtn = document.getElementById("cancelOrderPasswordCancelBtn");
+        if (cancelOrderPasswordCancelBtn) cancelOrderPasswordCancelBtn.onclick = cancelOrderPasswordCancel;
         
         const closePopupBtn = document.getElementById("closePopupBtn");
         if (closePopupBtn) closePopupBtn.onclick = closeCustomerPopup;
